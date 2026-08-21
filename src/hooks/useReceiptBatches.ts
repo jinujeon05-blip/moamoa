@@ -33,12 +33,22 @@ export function useReceiptBatches(userId: string | undefined) {
       return;
     }
     setLoading(true);
-    const { data } = await supabase
-      .from("receipt_batches")
-      .select("id, title, batch_date, receipt_count, total_amount, pdf_path")
-      .eq("user_id", userId)
-      .order("batch_date", { ascending: false });
-    setBatches((data ?? []).map(toBatch));
+
+    // 로그인 직후에는 세션 토큰이 아직 완전히 준비되지 않아 첫 요청이 실패할 수 있어 한 번 재시도
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const { data, error } = await supabase
+        .from("receipt_batches")
+        .select("id, title, batch_date, receipt_count, total_amount, pdf_path")
+        .eq("user_id", userId)
+        .order("batch_date", { ascending: false });
+      if (!error) {
+        setBatches((data ?? []).map(toBatch));
+        setLoading(false);
+        return;
+      }
+      if (attempt === 0) await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+    setBatches([]);
     setLoading(false);
   }, [userId]);
 

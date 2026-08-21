@@ -13,12 +13,22 @@ export function useProfile(userId: string | undefined) {
       return;
     }
     setLoading(true);
-    const { data } = await supabase
-      .from("profiles")
-      .select("id, name, email")
-      .eq("id", userId)
-      .single();
-    setProfile(data);
+
+    // 로그인 직후에는 세션 토큰이 아직 완전히 준비되지 않아 첫 요청이 401로 실패할 수 있어 한 번 재시도
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, name, email")
+        .eq("id", userId)
+        .single();
+      if (!error) {
+        setProfile(data);
+        setLoading(false);
+        return;
+      }
+      if (attempt === 0) await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+    setProfile(null);
     setLoading(false);
   }, [userId]);
 
