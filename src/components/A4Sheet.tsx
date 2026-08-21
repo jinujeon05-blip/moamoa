@@ -54,6 +54,7 @@ function PageContent({
       <div
         style={{
           flex: 1,
+          minHeight: 0,
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           gridTemplateRows: "repeat(3, 1fr)",
