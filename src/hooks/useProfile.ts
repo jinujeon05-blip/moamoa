@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import type { Profile } from "../types";
 
-export function useProfile(userId: string | undefined) {
+export function useProfile(userId: string | undefined, email: string | undefined) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -20,17 +20,31 @@ export function useProfile(userId: string | undefined) {
         .from("profiles")
         .select("id, name, email")
         .eq("id", userId)
-        .single();
+        .maybeSingle();
       if (!error) {
-        setProfile(data);
-        setLoading(false);
-        return;
+        if (data) {
+          setProfile(data);
+          setLoading(false);
+          return;
+        }
+        // 가입 시 트리거로 생성됐어야 할 프로필 행이 없는 경우를 대비한 자가복구
+        if (email) {
+          const fallbackName = email.split("@")[0];
+          const { data: created } = await supabase
+            .from("profiles")
+            .upsert({ id: userId, name: fallbackName, email })
+            .select("id, name, email")
+            .single();
+          setProfile(created ?? null);
+          setLoading(false);
+          return;
+        }
       }
       if (attempt === 0) await new Promise((resolve) => setTimeout(resolve, 500));
     }
     setProfile(null);
     setLoading(false);
-  }, [userId]);
+  }, [userId, email]);
 
   useEffect(() => {
     refetch();

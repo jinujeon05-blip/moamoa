@@ -29,7 +29,7 @@ function lastMonthRange(): [string, string] {
 export default function MyPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const { profile, loading: profileLoading, updateName } = useProfile(user?.id);
+  const { profile, loading: profileLoading, updateName } = useProfile(user?.id, user?.email);
   const { batches, loading: batchesLoading } = useReceiptBatches(user?.id);
 
   const [query, setQuery] = useState("");
