@@ -9,6 +9,10 @@ if (!isSupabaseConfigured) {
   console.warn(
     "Supabase 환경변수가 설정되지 않았어요. .env 파일에 VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY를 채워주세요."
   );
+} else {
+  console.info(
+    `[supabase-config] url=${envUrl} anonKeyPrefix=${envAnonKey?.slice(0, 12)} anonKeyLength=${envAnonKey?.length}`
+  );
 }
 
 // 키가 없어도 앱 자체는 뜨도록, 형식만 유효한 자리표시자로 폴백 (실제 인증 호출은 에러로 반환됨)
