@@ -2,6 +2,7 @@ node_modules
 dist
 .env
 .env.local
+*.tsbuildinfo
 
 # 민감 정보 / 개인 테스트 파일 (실수로 다운로드된 위치)
 OAuth 클라이언트.json

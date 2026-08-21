@@ -18,7 +18,6 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const { signUp, signInWithProvider } = useAuth();
   const navigate = useNavigate();
@@ -31,14 +30,13 @@ export default function SignupPage() {
     }
     setSubmitting(true);
     setError("");
-    setNotice("");
     const errorMessage = await signUp(email, password);
     setSubmitting(false);
     if (errorMessage) {
       setError(errorMessage);
       return;
     }
-    setNotice("가입 확인 메일을 보냈어요. 메일함을 확인해주세요.");
+    navigate("/mypage");
   };
 
   const handleProvider = async (provider: "google" | "kakao") => {
@@ -81,7 +79,6 @@ export default function SignupPage() {
           style={inputStyle}
         />
         {error && <p style={{ color: "#F04452", fontSize: 13, margin: 0 }}>{error}</p>}
-        {notice && <p style={{ color: "var(--primary)", fontSize: 13, margin: 0 }}>{notice}</p>}
         <button type="submit" className="btn" style={{ marginTop: 8 }} disabled={submitting}>
           {submitting ? "가입 처리 중..." : "회원가입"}
         </button>
