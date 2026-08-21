@@ -1,0 +1,115 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+/* ===== 디자인 시스템: 토스 · 클린 블루 ===== */
+:root {
+  --primary: #3182f6;
+  --primary-dark: #1b64da;
+  --text: #4e5968;
+  --sub: #8b95a1;
+  --bg: #f2f4f6;
+  --surface: #ffffff;
+  --border: #e5e8eb;
+
+  --radius: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 700;
+  color: #191f28;
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ===== 버튼: 라운드 ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: var(--radius);
+  padding: 12px 20px;
+  font-weight: 700;
+  font-size: 15px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: 0.15s;
+}
+.btn:hover {
+  filter: brightness(0.95);
+}
+.btn:disabled {
+  background: var(--sub);
+  cursor: not-allowed;
+  filter: none;
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover {
+  filter: none;
+  background: var(--bg);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--sub);
+  padding: 8px 10px;
+}
+.btn-ghost:hover {
+  filter: none;
+  color: var(--text);
+}
+
+/* ===== 레이아웃 (반응형) ===== */
+.receipt-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.receipt-layout > * {
+  min-width: 0;
+}
+@media (max-width: 860px) {
+  .receipt-layout {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+}
+
+/* ===== 아이콘: 라인, stroke 1.5 ===== */
+.icon {
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
