@@ -27,7 +27,7 @@ function lastMonthRange(): [string, string] {
 }
 
 export default function MyPage() {
-  const { user, logout, deleteAccount } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { profile, loading: profileLoading, updateName } = useProfile(user?.id, user?.email);
   const { batches, loading: batchesLoading, deleteBatch, updateBatch } = useReceiptBatches(user?.id);
@@ -89,24 +89,9 @@ export default function MyPage() {
   const [editError, setEditError] = useState("");
   const [savingEditId, setSavingEditId] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
-  const [confirmDeleteAccount, setConfirmDeleteAccount] = useState(false);
-  const [deletingAccount, setDeletingAccount] = useState(false);
-  const [deleteAccountError, setDeleteAccountError] = useState("");
 
   const handleLogout = async () => {
     await logout();
-    navigate("/");
-  };
-
-  const handleDeleteAccount = async () => {
-    setDeletingAccount(true);
-    setDeleteAccountError("");
-    const errorMessage = await deleteAccount();
-    setDeletingAccount(false);
-    if (errorMessage) {
-      setDeleteAccountError(errorMessage);
-      return;
-    }
     navigate("/");
   };
 
@@ -698,62 +683,6 @@ export default function MyPage() {
       {preview && (
         <PdfPreviewModal blobUrl={preview.blobUrl} title={preview.title} onClose={closePreview} />
       )}
-
-      {/* 회원 탈퇴 */}
-      <div
-        style={{
-          borderTop: "1px solid var(--border)",
-          marginTop: 40,
-          paddingTop: 20,
-          textAlign: "center",
-        }}
-      >
-        {confirmDeleteAccount ? (
-          <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-            <p style={{ margin: 0, fontSize: 13, color: "var(--sub)" }}>
-              탈퇴하면 저장된 모든 정리 내역과 PDF가 영구 삭제돼요. 계속할까요?
-            </p>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button
-                type="button"
-                className="btn"
-                style={{ padding: "6px 12px", fontSize: 13, background: "#F04452" }}
-                onClick={handleDeleteAccount}
-                disabled={deletingAccount}
-              >
-                {deletingAccount ? "탈퇴 중..." : "탈퇴하기"}
-              </button>
-              <button
-                type="button"
-                className="btn-secondary btn"
-                style={{ padding: "6px 12px", fontSize: 13 }}
-                onClick={() => setConfirmDeleteAccount(false)}
-                disabled={deletingAccount}
-              >
-                취소
-              </button>
-            </div>
-            {deleteAccountError && (
-              <p style={{ margin: 0, fontSize: 12, color: "#F04452" }}>{deleteAccountError}</p>
-            )}
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setConfirmDeleteAccount(true)}
-            style={{
-              background: "none",
-              border: "none",
-              color: "var(--sub)",
-              fontSize: 13,
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            회원 탈퇴
-          </button>
-        )}
-      </div>
     </main>
   );
 }
