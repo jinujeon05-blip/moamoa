@@ -1,0 +1,27 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="144" fill="#3182F6" />
+  <rect
+    x="112"
+    y="128"
+    width="224"
+    height="304"
+    rx="40"
+    fill="#ffffff"
+    opacity="0.45"
+    transform="rotate(-9 224 280)"
+  />
+  <rect
+    x="176"
+    y="96"
+    width="224"
+    height="304"
+    rx="40"
+    fill="#ffffff"
+    transform="rotate(7 288 248)"
+  />
+  <g transform="rotate(7 288 248)" stroke="#3182F6" stroke-width="22.4" stroke-linecap="round">
+    <line x1="232" y1="192" x2="360" y2="192" />
+    <line x1="232" y1="256" x2="360" y2="256" />
+    <line x1="232" y1="320" x2="320" y2="320" />
+  </g>
+</svg>
