@@ -1,4 +1,6 @@
+import { useState } from "react";
 import type { Receipt } from "../types";
+import { recognizeAmount } from "../utils/ocr";
 
 interface Props {
   receipt: Receipt;
@@ -13,6 +15,26 @@ export default function ReceiptThumbnail({
   onMemoChange,
   onRemove,
 }: Props) {
+  const [recognizing, setRecognizing] = useState(false);
+  const [ocrFailed, setOcrFailed] = useState(false);
+
+  const handleRecognize = async () => {
+    setRecognizing(true);
+    setOcrFailed(false);
+    try {
+      const amount = await recognizeAmount(receipt.imageUrl);
+      if (amount) {
+        onAmountChange(receipt.id, amount);
+      } else {
+        setOcrFailed(true);
+      }
+    } catch {
+      setOcrFailed(true);
+    } finally {
+      setRecognizing(false);
+    }
+  };
+
   return (
     <div
       style={{
@@ -65,6 +87,16 @@ export default function ReceiptThumbnail({
               fontSize: 14,
             }}
           />
+          <button
+            type="button"
+            className="btn-ghost"
+            onClick={handleRecognize}
+            disabled={recognizing}
+            title="금액 자동 인식"
+            style={{ padding: "0 8px", flexShrink: 0, fontSize: 12, whiteSpace: "nowrap" }}
+          >
+            {recognizing ? "인식 중..." : "금액 인식"}
+          </button>
           <input
             type="text"
             placeholder="메모 (선택)"
@@ -81,6 +113,11 @@ export default function ReceiptThumbnail({
             }}
           />
         </div>
+        {ocrFailed && (
+          <p style={{ margin: 0, fontSize: 12, color: "var(--sub)" }}>
+            금액을 인식하지 못했어요. 직접 입력해주세요.
+          </p>
+        )}
       </div>
       <button
         className="btn-ghost"
