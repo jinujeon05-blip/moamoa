@@ -9,6 +9,7 @@ import { highlightMatch } from "../utils/highlightText";
 import PdfPreviewModal from "../components/PdfPreviewModal";
 import { CATEGORIES } from "../constants/categories";
 import { toLocalDateStr as toDateStr } from "../utils/date";
+import { exportBatchesToExcel } from "../utils/excelExport";
 
 type SortKey = "latest" | "amount";
 
@@ -87,6 +88,7 @@ export default function MyPage() {
   const [editAmount, setEditAmount] = useState("");
   const [editError, setEditError] = useState("");
   const [savingEditId, setSavingEditId] = useState<string | null>(null);
+  const [exporting, setExporting] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -157,6 +159,15 @@ export default function MyPage() {
       return;
     }
     setEditingBatchId(null);
+  };
+
+  const handleExportExcel = async () => {
+    setExporting(true);
+    try {
+      await exportBatchesToExcel(filtered, `모아모아_영수증정리내역_${toDateStr(new Date())}.xlsx`);
+    } finally {
+      setExporting(false);
+    }
   };
 
   const startEditingName = () => {
@@ -292,7 +303,27 @@ export default function MyPage() {
 
       {/* 활동 내역 */}
       <section>
-        <h2 style={{ fontSize: 18, marginBottom: 12 }}>영수증 정리 내역</h2>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 8,
+            marginBottom: 12,
+          }}
+        >
+          <h2 style={{ fontSize: 18 }}>영수증 정리 내역</h2>
+          <button
+            type="button"
+            className="btn-secondary btn"
+            style={{ padding: "6px 12px", fontSize: 13 }}
+            onClick={handleExportExcel}
+            disabled={exporting || filtered.length === 0}
+          >
+            {exporting ? "내보내는 중..." : "엑셀 다운로드"}
+          </button>
+        </div>
 
         <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
           <input
