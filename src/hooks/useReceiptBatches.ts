@@ -5,6 +5,7 @@ import type { ReceiptBatch } from "../types";
 interface Row {
   id: string;
   title: string;
+  category: string;
   batch_date: string;
   receipt_count: number;
   total_amount: number;
@@ -15,6 +16,7 @@ function toBatch(row: Row): ReceiptBatch {
   return {
     id: row.id,
     title: row.title,
+    category: row.category,
     batchDate: row.batch_date,
     receiptCount: row.receipt_count,
     totalAmount: row.total_amount,
@@ -38,7 +40,7 @@ export function useReceiptBatches(userId: string | undefined) {
     for (let attempt = 0; attempt < 2; attempt++) {
       const { data, error } = await supabase
         .from("receipt_batches")
-        .select("id, title, batch_date, receipt_count, total_amount, pdf_path")
+        .select("id, title, category, batch_date, receipt_count, total_amount, pdf_path")
         .eq("user_id", userId)
         .order("batch_date", { ascending: false });
       if (!error) {

@@ -7,6 +7,7 @@ import { supabase } from "../lib/supabaseClient";
 import { formatWon } from "../utils/format";
 import { highlightMatch } from "../utils/highlightText";
 import PdfPreviewModal from "../components/PdfPreviewModal";
+import { CATEGORIES } from "../constants/categories";
 
 type SortKey = "latest" | "amount";
 
@@ -39,19 +40,21 @@ export default function MyPage() {
   const [dateTo, setDateTo] = useState("");
   const [amountMin, setAmountMin] = useState("");
   const [amountMax, setAmountMax] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
 
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState("");
   const [nameError, setNameError] = useState("");
   const [savingName, setSavingName] = useState(false);
 
-  const hasActiveFilters = Boolean(dateFrom || dateTo || amountMin || amountMax);
+  const hasActiveFilters = Boolean(dateFrom || dateTo || amountMin || amountMax || categoryFilter);
 
   const resetFilters = () => {
     setDateFrom("");
     setDateTo("");
     setAmountMin("");
     setAmountMax("");
+    setCategoryFilter("");
   };
 
   const filtered = useMemo(() => {
@@ -65,6 +68,7 @@ export default function MyPage() {
       if (dateTo && item.batchDate > dateTo) return false;
       if (min !== null && item.totalAmount < min) return false;
       if (max !== null && item.totalAmount > max) return false;
+      if (categoryFilter && item.category !== categoryFilter) return false;
       return true;
     });
     list = [...list].sort((a, b) =>
@@ -73,7 +77,7 @@ export default function MyPage() {
         : b.totalAmount - a.totalAmount
     );
     return list;
-  }, [batches, query, sortKey, dateFrom, dateTo, amountMin, amountMax]);
+  }, [batches, query, sortKey, dateFrom, dateTo, amountMin, amountMax, categoryFilter]);
 
   const [openingId, setOpeningId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
@@ -329,6 +333,27 @@ export default function MyPage() {
             }}
           />
 
+          <span style={{ color: "var(--sub)", marginLeft: 8 }}>카테고리</span>
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            style={{
+              padding: "6px 8px",
+              borderRadius: 8,
+              border: "1px solid var(--border)",
+              fontFamily: "inherit",
+              fontSize: 13,
+              background: "var(--surface)",
+            }}
+          >
+            <option value="">전체</option>
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+
           <span style={{ color: "var(--sub)", marginLeft: 8 }}>금액</span>
           <input
             type="number"
@@ -398,7 +423,22 @@ export default function MyPage() {
                 }}
               >
                 <div style={{ minWidth: 0 }}>
-                  <p style={{ margin: 0, fontWeight: 600 }}>{highlightMatch(item.title, query)}</p>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                    <span
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 600,
+                        color: "var(--primary)",
+                        background: "#EAF2FF",
+                        borderRadius: 999,
+                        padding: "2px 8px",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {item.category}
+                    </span>
+                    <p style={{ margin: 0, fontWeight: 600 }}>{highlightMatch(item.title, query)}</p>
+                  </div>
                   <p style={{ margin: "4px 0 0", fontSize: 13, color: "var(--sub)" }}>
                     {item.batchDate} · 영수증 {item.receiptCount}장
                   </p>

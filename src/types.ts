@@ -15,6 +15,7 @@ export interface Profile {
 export interface ReceiptBatch {
   id: string;
   title: string;
+  category: string;
   batchDate: string; // YYYY-MM-DD
   receiptCount: number;
   totalAmount: number;

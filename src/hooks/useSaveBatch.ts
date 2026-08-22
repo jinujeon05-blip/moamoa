@@ -4,6 +4,7 @@ import { supabase } from "../lib/supabaseClient";
 interface SaveBatchInput {
   userId: string;
   title: string;
+  category: string;
   receiptCount: number;
   totalAmount: number;
   pdfBlob: Blob | null;
@@ -13,7 +14,7 @@ export function useSaveBatch() {
   const [saving, setSaving] = useState(false);
 
   const saveBatch = useCallback(
-    async ({ userId, title, receiptCount, totalAmount, pdfBlob }: SaveBatchInput) => {
+    async ({ userId, title, category, receiptCount, totalAmount, pdfBlob }: SaveBatchInput) => {
       setSaving(true);
 
       let pdfPath: string | null = null;
@@ -32,6 +33,7 @@ export function useSaveBatch() {
       const { error } = await supabase.from("receipt_batches").insert({
         user_id: userId,
         title,
+        category,
         batch_date: new Date().toISOString().slice(0, 10),
         receipt_count: receiptCount,
         total_amount: totalAmount,

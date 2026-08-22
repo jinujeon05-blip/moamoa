@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useSaveBatch } from "../hooks/useSaveBatch";
+import { CATEGORIES, DEFAULT_CATEGORY } from "../constants/categories";
 
 interface Props {
   receiptCount: number;
@@ -21,6 +22,7 @@ export default function SaveBatchPanel({
   const { user } = useAuth();
   const { saveBatch, saving } = useSaveBatch();
   const [title, setTitle] = useState("");
+  const [category, setCategory] = useState<string>(DEFAULT_CATEGORY);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
 
@@ -57,6 +59,7 @@ export default function SaveBatchPanel({
     const errorMessage = await saveBatch({
       userId: user.id,
       title: title.trim(),
+      category,
       receiptCount,
       totalAmount,
       pdfBlob,
@@ -99,6 +102,27 @@ export default function SaveBatchPanel({
           fontSize: 14,
         }}
       />
+      <select
+        value={category}
+        onChange={(e) => setCategory(e.target.value)}
+        disabled={disabled}
+        style={{
+          width: "100%",
+          boxSizing: "border-box",
+          padding: "10px 12px",
+          borderRadius: 8,
+          border: "1px solid var(--border)",
+          fontFamily: "inherit",
+          fontSize: 14,
+          background: "var(--surface)",
+        }}
+      >
+        {CATEGORIES.map((c) => (
+          <option key={c} value={c}>
+            {c}
+          </option>
+        ))}
+      </select>
       <button
         className="btn-secondary btn"
         onClick={handleSave}
