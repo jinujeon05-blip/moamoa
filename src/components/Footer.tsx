@@ -47,6 +47,9 @@ export default function Footer() {
       >
         <span>© 2026 모아모아</span>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 16 }}>
+          <Link to="/guide" style={{ color: "var(--sub)" }}>
+            이용가이드
+          </Link>
           {showDeleteAccount &&
             (confirming ? (
               <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
