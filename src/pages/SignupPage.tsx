@@ -17,6 +17,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const { signUp, signInWithProvider } = useAuth();
@@ -24,6 +25,10 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!agreed) {
+      setError("이용약관과 개인정보처리방침에 동의해주세요");
+      return;
+    }
     if (password !== passwordConfirm) {
       setError("비밀번호가 일치하지 않아요");
       return;
@@ -40,6 +45,10 @@ export default function SignupPage() {
   };
 
   const handleProvider = async (provider: "google" | "kakao") => {
+    if (!agreed) {
+      setError("이용약관과 개인정보처리방침에 동의해주세요");
+      return;
+    }
     setError("");
     const errorMessage = await signInWithProvider(provider);
     if (errorMessage) setError(errorMessage);
@@ -78,6 +87,33 @@ export default function SignupPage() {
           onChange={(e) => setPasswordConfirm(e.target.value)}
           style={inputStyle}
         />
+        <label
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 8,
+            fontSize: 13,
+            color: "var(--text)",
+            cursor: "pointer",
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={agreed}
+            onChange={(e) => setAgreed(e.target.checked)}
+            style={{ marginTop: 2, flexShrink: 0 }}
+          />
+          <span>
+            <Link to="/terms" target="_blank" style={{ color: "var(--primary)", fontWeight: 600 }}>
+              이용약관
+            </Link>
+            {" 및 "}
+            <Link to="/privacy" target="_blank" style={{ color: "var(--primary)", fontWeight: 600 }}>
+              개인정보처리방침
+            </Link>
+            에 동의합니다 (필수)
+          </span>
+        </label>
         {error && <p style={{ color: "#F04452", fontSize: 13, margin: 0 }}>{error}</p>}
         <button type="submit" className="btn" style={{ marginTop: 8 }} disabled={submitting}>
           {submitting ? "가입 처리 중..." : "회원가입"}
