@@ -20,6 +20,7 @@ export default function SignupPage() {
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [confirmationSent, setConfirmationSent] = useState(false);
   const { signUp, signInWithProvider } = useAuth();
   const navigate = useNavigate();
 
@@ -35,10 +36,14 @@ export default function SignupPage() {
     }
     setSubmitting(true);
     setError("");
-    const errorMessage = await signUp(email, password);
+    const { error: errorMessage, needsConfirmation } = await signUp(email, password);
     setSubmitting(false);
     if (errorMessage) {
       setError(errorMessage);
+      return;
+    }
+    if (needsConfirmation) {
+      setConfirmationSent(true);
       return;
     }
     navigate("/mypage");
@@ -53,6 +58,23 @@ export default function SignupPage() {
     const errorMessage = await signInWithProvider(provider);
     if (errorMessage) setError(errorMessage);
   };
+
+  if (confirmationSent) {
+    return (
+      <main style={{ maxWidth: 380, margin: "60px auto", padding: "0 24px", textAlign: "center" }}>
+        <h1 style={{ fontSize: 24, marginBottom: 8 }}>이메일을 확인해주세요</h1>
+        <p style={{ color: "var(--sub)", fontSize: 14, marginBottom: 8 }}>
+          <strong style={{ color: "var(--text)" }}>{email}</strong>로 인증 메일을 보냈어요.
+        </p>
+        <p style={{ color: "var(--sub)", fontSize: 14, marginBottom: 28 }}>
+          메일함의 링크를 클릭하면 가입이 완료돼요.
+        </p>
+        <Link to="/login" style={{ color: "var(--primary)", fontWeight: 600, fontSize: 14 }}>
+          로그인으로 돌아가기
+        </Link>
+      </main>
+    );
+  }
 
   return (
     <main style={{ maxWidth: 380, margin: "60px auto", padding: "0 24px" }}>

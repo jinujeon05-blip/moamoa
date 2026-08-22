@@ -65,6 +65,11 @@ export default function LoginPage() {
           style={inputStyle}
         />
         {error && <p style={{ color: "#F04452", fontSize: 13, margin: 0 }}>{error}</p>}
+        <div style={{ textAlign: "right" }}>
+          <Link to="/forgot-password" style={{ color: "var(--sub)", fontSize: 13 }}>
+            비밀번호를 잊으셨나요?
+          </Link>
+        </div>
         <button type="submit" className="btn" style={{ marginTop: 8 }} disabled={submitting}>
           {submitting ? "로그인 중..." : "로그인"}
         </button>

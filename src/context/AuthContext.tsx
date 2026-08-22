@@ -12,10 +12,13 @@ interface User {
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
-  signUp: (email: string, password: string) => Promise<string | null>;
+  signUp: (email: string, password: string) => Promise<{ error: string | null; needsConfirmation: boolean }>;
   signIn: (email: string, password: string) => Promise<string | null>;
   signInWithProvider: (provider: "google" | "kakao") => Promise<string | null>;
   logout: () => Promise<void>;
+  resetPasswordForEmail: (email: string) => Promise<string | null>;
+  updatePassword: (newPassword: string) => Promise<string | null>;
+  deleteAccount: () => Promise<string | null>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -55,8 +58,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user,
       loading,
       signUp: async (email, password) => {
-        const { error } = await supabase.auth.signUp({ email, password });
-        return error?.message ?? null;
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        if (error) return { error: error.message, needsConfirmation: false };
+        return { error: null, needsConfirmation: !data.session };
       },
       signIn: async (email, password) => {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -71,6 +75,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
       logout: async () => {
         await supabase.auth.signOut();
+      },
+      resetPasswordForEmail: async (email) => {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        return error?.message ?? null;
+      },
+      updatePassword: async (newPassword) => {
+        const { error } = await supabase.auth.updateUser({ password: newPassword });
+        return error?.message ?? null;
+      },
+      deleteAccount: async () => {
+        if (!user) return "로그인이 필요해요";
+        const { data: files } = await supabase.storage.from("receipt-pdfs").list(user.id);
+        if (files && files.length > 0) {
+          await supabase.storage
+            .from("receipt-pdfs")
+            .remove(files.map((f) => `${user.id}/${f.name}`));
+        }
+        const { error } = await supabase.rpc("delete_own_account");
+        if (error) return error.message;
+        await supabase.auth.signOut();
+        return null;
       },
     }),
     [user, loading]
