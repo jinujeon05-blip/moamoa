@@ -111,6 +111,17 @@ button {
   }
 }
 
+/* ===== 헤더 (반응형) ===== */
+@media (max-width: 480px) {
+  .header-caption {
+    display: none;
+  }
+  .header-nav-btn {
+    padding: 10px 12px !important;
+    font-size: 14px !important;
+  }
+}
+
 /* ===== 아이콘: 라인, stroke 1.5 ===== */
 .icon {
   width: 24px;

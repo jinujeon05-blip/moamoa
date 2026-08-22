@@ -248,14 +248,41 @@ export default function MyPage() {
                 {nameError && <p style={{ margin: 0, fontSize: 12, color: "#F04452" }}>{nameError}</p>}
               </div>
             ) : (
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <p style={{ margin: 0, fontWeight: 700, fontSize: 16 }}>{profile?.name}</p>
-                <button className="btn-ghost" onClick={startEditingName} style={{ fontSize: 12 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+                <p
+                  style={{
+                    margin: 0,
+                    fontWeight: 700,
+                    fontSize: 16,
+                    minWidth: 0,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {profile?.name}
+                </p>
+                <button
+                  className="btn-ghost"
+                  onClick={startEditingName}
+                  style={{ fontSize: 12, flexShrink: 0, whiteSpace: "nowrap" }}
+                >
                   수정
                 </button>
               </div>
             )}
-            <p style={{ margin: "2px 0 0", color: "var(--sub)", fontSize: 13 }}>{profile?.email}</p>
+            <p
+              style={{
+                margin: "2px 0 0",
+                color: "var(--sub)",
+                fontSize: 13,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {profile?.email}
+            </p>
           </div>
         </div>
         <button className="btn-secondary btn" onClick={handleLogout} style={{ flexShrink: 0 }}>
