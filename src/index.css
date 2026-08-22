@@ -73,13 +73,22 @@ button {
 }
 
 .btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   background: transparent;
   color: var(--sub);
   padding: 8px 10px;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: 0.15s;
 }
 .btn-ghost:hover {
   filter: none;
   color: var(--text);
+  background: var(--bg);
 }
 
 /* ===== 레이아웃 (반응형) ===== */
