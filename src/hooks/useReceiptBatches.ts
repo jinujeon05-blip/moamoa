@@ -56,5 +56,15 @@ export function useReceiptBatches(userId: string | undefined) {
     refetch();
   }, [refetch]);
 
-  return { batches, loading, refetch };
+  const deleteBatch = useCallback(async (id: string, pdfPath: string | null) => {
+    if (pdfPath) {
+      await supabase.storage.from("receipt-pdfs").remove([pdfPath]);
+    }
+    const { error } = await supabase.from("receipt_batches").delete().eq("id", id);
+    if (error) return error.message;
+    setBatches((prev) => prev.filter((b) => b.id !== id));
+    return null;
+  }, []);
+
+  return { batches, loading, refetch, deleteBatch };
 }

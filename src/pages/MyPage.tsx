@@ -30,7 +30,7 @@ export default function MyPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { profile, loading: profileLoading, updateName } = useProfile(user?.id, user?.email);
-  const { batches, loading: batchesLoading } = useReceiptBatches(user?.id);
+  const { batches, loading: batchesLoading, deleteBatch } = useReceiptBatches(user?.id);
 
   const [query, setQuery] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("latest");
@@ -75,10 +75,22 @@ export default function MyPage() {
   }, [batches, query, sortKey, dateFrom, dateTo, amountMin, amountMax]);
 
   const [openingId, setOpeningId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const handleLogout = async () => {
     await logout();
     navigate("/");
+  };
+
+  const handleDelete = async (id: string, pdfPath: string | null) => {
+    setDeletingId(id);
+    const errorMessage = await deleteBatch(id, pdfPath);
+    setDeletingId(null);
+    setConfirmDeleteId(null);
+    if (errorMessage) {
+      alert("삭제 중 문제가 발생했어요: " + errorMessage);
+    }
   };
 
   const openPdf = async (batchId: string, pdfPath: string) => {
@@ -385,22 +397,56 @@ export default function MyPage() {
                     {item.batchDate} · 영수증 {item.receiptCount}장
                   </p>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
-                  {item.pdfPath && (
+                {confirmDeleteId === item.id ? (
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+                    <span style={{ fontSize: 13, color: "var(--sub)" }}>삭제할까요?</span>
+                    <button
+                      type="button"
+                      className="btn"
+                      style={{ padding: "6px 12px", fontSize: 13, background: "#F04452" }}
+                      onClick={() => handleDelete(item.id, item.pdfPath)}
+                      disabled={deletingId === item.id}
+                    >
+                      {deletingId === item.id ? "삭제 중..." : "삭제"}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-secondary btn"
+                      style={{ padding: "6px 12px", fontSize: 13 }}
+                      onClick={() => setConfirmDeleteId(null)}
+                    >
+                      취소
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
+                    {item.pdfPath && (
+                      <button
+                        type="button"
+                        className="btn-ghost"
+                        style={{ fontSize: 13 }}
+                        onClick={() => openPdf(item.id, item.pdfPath!)}
+                        disabled={openingId === item.id}
+                      >
+                        {openingId === item.id ? "여는 중..." : "A4 보기"}
+                      </button>
+                    )}
+                    <p style={{ margin: 0, fontWeight: 700, color: "var(--primary)" }}>
+                      {formatWon(item.totalAmount)}
+                    </p>
                     <button
                       type="button"
                       className="btn-ghost"
-                      style={{ fontSize: 13 }}
-                      onClick={() => openPdf(item.id, item.pdfPath!)}
-                      disabled={openingId === item.id}
+                      aria-label="삭제"
+                      style={{ padding: 4 }}
+                      onClick={() => setConfirmDeleteId(item.id)}
                     >
-                      {openingId === item.id ? "여는 중..." : "A4 보기"}
+                      <svg className="icon" style={{ width: 18, height: 18 }} viewBox="0 0 24 24">
+                        <path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-8 0v12a2 2 0 002 2h6a2 2 0 002-2V7" />
+                      </svg>
                     </button>
-                  )}
-                  <p style={{ margin: 0, fontWeight: 700, color: "var(--primary)" }}>
-                    {formatWon(item.totalAmount)}
-                  </p>
-                </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
