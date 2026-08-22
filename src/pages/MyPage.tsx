@@ -6,6 +6,7 @@ import { useReceiptBatches } from "../hooks/useReceiptBatches";
 import { supabase } from "../lib/supabaseClient";
 import { formatWon } from "../utils/format";
 import { highlightMatch } from "../utils/highlightText";
+import PdfPreviewModal from "../components/PdfPreviewModal";
 
 type SortKey = "latest" | "amount";
 
@@ -77,6 +78,7 @@ export default function MyPage() {
   const [openingId, setOpeningId] = useState<string | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [preview, setPreview] = useState<{ blobUrl: string; title: string } | null>(null);
 
   const handleLogout = async () => {
     await logout();
@@ -93,24 +95,28 @@ export default function MyPage() {
     }
   };
 
-  const openPdf = async (batchId: string, pdfPath: string) => {
-    // 팝업 차단을 피하려면 클릭한 시점(동기)에 탭을 먼저 열고, URL이 준비되면 그 탭을 이동시켜야 함
-    const newTab = window.open("", "_blank");
+  const openPdf = async (batchId: string, pdfPath: string, title: string) => {
     setOpeningId(batchId);
     const { data, error } = await supabase.storage.from("receipt-pdfs").createSignedUrl(pdfPath, 60);
-    setOpeningId(null);
-
     if (error || !data?.signedUrl) {
-      newTab?.close();
+      setOpeningId(null);
       alert("PDF를 여는 중 문제가 발생했어요: " + (error?.message ?? "알 수 없는 오류"));
       return;
     }
 
-    if (newTab) {
-      newTab.location.href = data.signedUrl;
-    } else {
-      window.location.href = data.signedUrl;
+    const res = await fetch(data.signedUrl);
+    setOpeningId(null);
+    if (!res.ok) {
+      alert("PDF를 불러오지 못했어요");
+      return;
     }
+    const blob = await res.blob();
+    setPreview({ blobUrl: URL.createObjectURL(blob), title });
+  };
+
+  const closePreview = () => {
+    if (preview) URL.revokeObjectURL(preview.blobUrl);
+    setPreview(null);
   };
 
   const startEditingName = () => {
@@ -425,7 +431,7 @@ export default function MyPage() {
                         type="button"
                         className="btn-ghost"
                         style={{ fontSize: 13 }}
-                        onClick={() => openPdf(item.id, item.pdfPath!)}
+                        onClick={() => openPdf(item.id, item.pdfPath!, item.title)}
                         disabled={openingId === item.id}
                       >
                         {openingId === item.id ? "여는 중..." : "A4 보기"}
@@ -452,6 +458,10 @@ export default function MyPage() {
           </div>
         )}
       </section>
+
+      {preview && (
+        <PdfPreviewModal blobUrl={preview.blobUrl} title={preview.title} onClose={closePreview} />
+      )}
     </main>
   );
 }
