@@ -302,6 +302,7 @@ export default function MyPage() {
             onChange={(e) => setQuery(e.target.value)}
             style={{
               flex: 1,
+              minWidth: 0,
               padding: "10px 14px",
               borderRadius: 10,
               border: "1px solid var(--border)",
@@ -313,6 +314,7 @@ export default function MyPage() {
             value={sortKey}
             onChange={(e) => setSortKey(e.target.value as SortKey)}
             style={{
+              flexShrink: 0,
               padding: "10px 14px",
               borderRadius: 10,
               border: "1px solid var(--border)",
