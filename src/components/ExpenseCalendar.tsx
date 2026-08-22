@@ -13,13 +13,6 @@ function toDateKey(y: number, m: number, d: number): string {
   return `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 }
 
-function compactWon(amount: number): string {
-  if (amount >= 10000) {
-    const man = amount / 10000;
-    return `${Number.isInteger(man) ? man : man.toFixed(1)}만`;
-  }
-  return amount.toLocaleString("ko-KR");
-}
 
 export default function ExpenseCalendar({ batches }: Props) {
   const today = new Date();
@@ -174,8 +167,17 @@ export default function ExpenseCalendar({ batches }: Props) {
                 {day}
               </span>
               {dayTotal > 0 && (
-                <span style={{ fontSize: 10, fontWeight: 700, color: "var(--primary)" }}>
-                  {compactWon(dayTotal)}
+                <span
+                  style={{
+                    fontSize: 9,
+                    fontWeight: 700,
+                    color: "var(--primary)",
+                    lineHeight: 1.1,
+                    textAlign: "center",
+                    wordBreak: "keep-all",
+                  }}
+                >
+                  {dayTotal.toLocaleString("ko-KR")}
                 </span>
               )}
             </button>
