@@ -316,56 +316,6 @@ export default function MyPage() {
         </button>
       </section>
 
-      {/* 회원 탈퇴 */}
-      <section style={{ textAlign: "right", marginBottom: 24 }}>
-        {confirmDeleteAccount ? (
-          <div
-            style={{
-              display: "inline-flex",
-              flexDirection: "column",
-              alignItems: "flex-end",
-              gap: 8,
-            }}
-          >
-            <p style={{ margin: 0, fontSize: 13, color: "var(--sub)" }}>
-              탈퇴하면 저장된 모든 정리 내역과 PDF가 영구 삭제돼요. 계속할까요?
-            </p>
-            <div style={{ display: "flex", gap: 8 }}>
-              <button
-                type="button"
-                className="btn"
-                style={{ padding: "6px 12px", fontSize: 13, background: "#F04452" }}
-                onClick={handleDeleteAccount}
-                disabled={deletingAccount}
-              >
-                {deletingAccount ? "탈퇴 중..." : "탈퇴하기"}
-              </button>
-              <button
-                type="button"
-                className="btn-secondary btn"
-                style={{ padding: "6px 12px", fontSize: 13 }}
-                onClick={() => setConfirmDeleteAccount(false)}
-                disabled={deletingAccount}
-              >
-                취소
-              </button>
-            </div>
-            {deleteAccountError && (
-              <p style={{ margin: 0, fontSize: 12, color: "#F04452" }}>{deleteAccountError}</p>
-            )}
-          </div>
-        ) : (
-          <button
-            type="button"
-            className="btn-ghost"
-            style={{ fontSize: 13 }}
-            onClick={() => setConfirmDeleteAccount(true)}
-          >
-            회원 탈퇴
-          </button>
-        )}
-      </section>
-
       {/* 활동 내역 */}
       <section>
         <div
@@ -748,6 +698,62 @@ export default function MyPage() {
       {preview && (
         <PdfPreviewModal blobUrl={preview.blobUrl} title={preview.title} onClose={closePreview} />
       )}
+
+      {/* 회원 탈퇴 */}
+      <div
+        style={{
+          borderTop: "1px solid var(--border)",
+          marginTop: 40,
+          paddingTop: 20,
+          textAlign: "center",
+        }}
+      >
+        {confirmDeleteAccount ? (
+          <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
+            <p style={{ margin: 0, fontSize: 13, color: "var(--sub)" }}>
+              탈퇴하면 저장된 모든 정리 내역과 PDF가 영구 삭제돼요. 계속할까요?
+            </p>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button
+                type="button"
+                className="btn"
+                style={{ padding: "6px 12px", fontSize: 13, background: "#F04452" }}
+                onClick={handleDeleteAccount}
+                disabled={deletingAccount}
+              >
+                {deletingAccount ? "탈퇴 중..." : "탈퇴하기"}
+              </button>
+              <button
+                type="button"
+                className="btn-secondary btn"
+                style={{ padding: "6px 12px", fontSize: 13 }}
+                onClick={() => setConfirmDeleteAccount(false)}
+                disabled={deletingAccount}
+              >
+                취소
+              </button>
+            </div>
+            {deleteAccountError && (
+              <p style={{ margin: 0, fontSize: 12, color: "#F04452" }}>{deleteAccountError}</p>
+            )}
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setConfirmDeleteAccount(true)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "var(--sub)",
+              fontSize: 13,
+              cursor: "pointer",
+              padding: 0,
+            }}
+          >
+            회원 탈퇴
+          </button>
+        )}
+      </div>
     </main>
   );
 }

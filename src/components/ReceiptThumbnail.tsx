@@ -79,7 +79,8 @@ export default function ReceiptThumbnail({
             value={receipt.amount || ""}
             onChange={(e) => onAmountChange(receipt.id, Number(e.target.value))}
             style={{
-              width: 110,
+              flex: 1,
+              minWidth: 0,
               padding: "8px 10px",
               borderRadius: 8,
               border: "1px solid var(--border)",
@@ -97,22 +98,22 @@ export default function ReceiptThumbnail({
           >
             {recognizing ? "인식 중..." : "금액 인식"}
           </button>
-          <input
-            type="text"
-            placeholder="메모 (선택)"
-            value={receipt.memo}
-            onChange={(e) => onMemoChange(receipt.id, e.target.value)}
-            style={{
-              flex: 1,
-              minWidth: 0,
-              padding: "8px 10px",
-              borderRadius: 8,
-              border: "1px solid var(--border)",
-              fontFamily: "inherit",
-              fontSize: 14,
-            }}
-          />
         </div>
+        <input
+          type="text"
+          placeholder="메모 (선택)"
+          value={receipt.memo}
+          onChange={(e) => onMemoChange(receipt.id, e.target.value)}
+          style={{
+            width: "100%",
+            boxSizing: "border-box",
+            padding: "8px 10px",
+            borderRadius: 8,
+            border: "1px solid var(--border)",
+            fontFamily: "inherit",
+            fontSize: 14,
+          }}
+        />
         {ocrFailed && (
           <p style={{ margin: 0, fontSize: 12, color: "var(--sub)" }}>
             금액을 인식하지 못했어요. 직접 입력해주세요.
