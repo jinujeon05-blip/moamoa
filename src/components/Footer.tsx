@@ -56,6 +56,12 @@ export default function Footer() {
           <Link to="/faq" style={{ color: "var(--sub)" }}>
             자주 묻는 질문
           </Link>
+          <Link to="/terms" style={{ color: "var(--sub)" }}>
+            이용약관
+          </Link>
+          <Link to="/privacy" style={{ color: "var(--sub)" }}>
+            개인정보처리방침
+          </Link>
           {showDeleteAccount &&
             (confirming ? (
               <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -108,12 +114,6 @@ export default function Footer() {
                 회원 탈퇴
               </button>
             ))}
-          <Link to="/terms" style={{ color: "var(--sub)" }}>
-            이용약관
-          </Link>
-          <Link to="/privacy" style={{ color: "var(--sub)" }}>
-            개인정보처리방침
-          </Link>
         </div>
       </div>
       {error && (
