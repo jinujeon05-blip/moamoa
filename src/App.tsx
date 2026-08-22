@@ -8,6 +8,7 @@ const ReceiptManagerPage = lazy(() => import("./pages/ReceiptManagerPage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const SignupPage = lazy(() => import("./pages/SignupPage"));
 const MyPage = lazy(() => import("./pages/MyPage"));
+const StatsPage = lazy(() => import("./pages/StatsPage"));
 
 export default function App() {
   return (
@@ -25,6 +26,14 @@ export default function App() {
                 element={
                   <ProtectedRoute>
                     <MyPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/stats"
+                element={
+                  <ProtectedRoute>
+                    <StatsPage />
                   </ProtectedRoute>
                 }
               />

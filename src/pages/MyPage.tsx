@@ -8,12 +8,9 @@ import { formatWon } from "../utils/format";
 import { highlightMatch } from "../utils/highlightText";
 import PdfPreviewModal from "../components/PdfPreviewModal";
 import { CATEGORIES } from "../constants/categories";
+import { toLocalDateStr as toDateStr } from "../utils/date";
 
 type SortKey = "latest" | "amount";
-
-function toDateStr(date: Date): string {
-  return date.toISOString().slice(0, 10);
-}
 
 function thisMonthRange(): [string, string] {
   const now = new Date();

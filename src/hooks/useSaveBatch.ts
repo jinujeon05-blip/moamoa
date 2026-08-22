@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { toLocalDateStr } from "../utils/date";
 
 interface SaveBatchInput {
   userId: string;
@@ -34,7 +35,7 @@ export function useSaveBatch() {
         user_id: userId,
         title,
         category,
-        batch_date: new Date().toISOString().slice(0, 10),
+        batch_date: toLocalDateStr(new Date()),
         receipt_count: receiptCount,
         total_amount: totalAmount,
         pdf_path: pdfPath,

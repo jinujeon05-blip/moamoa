@@ -49,13 +49,18 @@ export default function Header() {
 
         <nav style={{ display: "flex", alignItems: "center", gap: 8 }}>
           {user ? (
-            <Link
-              to="/mypage"
-              className="btn-secondary btn"
-              style={{ textDecoration: "none" }}
-            >
-              마이페이지
-            </Link>
+            <>
+              <Link to="/stats" className="btn-ghost btn" style={{ textDecoration: "none" }}>
+                통계
+              </Link>
+              <Link
+                to="/mypage"
+                className="btn-secondary btn"
+                style={{ textDecoration: "none" }}
+              >
+                마이페이지
+              </Link>
+            </>
           ) : (
             <>
               <Link to="/login" className="btn-ghost btn" style={{ textDecoration: "none" }}>
