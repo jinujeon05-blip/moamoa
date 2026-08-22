@@ -16,6 +16,7 @@ const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
 const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const GuidePage = lazy(() => import("./pages/GuidePage"));
 const FaqPage = lazy(() => import("./pages/FaqPage"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
                 <Route path="/privacy" element={<PrivacyPage />} />
                 <Route path="/guide" element={<GuidePage />} />
                 <Route path="/faq" element={<FaqPage />} />
+                <Route path="/about" element={<AboutPage />} />
                 <Route
                   path="/mypage"
                   element={
