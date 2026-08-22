@@ -1,9 +1,10 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useReceiptBatches } from "../hooks/useReceiptBatches";
 import { CATEGORY_COLORS } from "../constants/categoryColors";
 import { formatWon } from "../utils/format";
 import { toLocalMonthStr } from "../utils/date";
+import ExpenseCalendar from "../components/ExpenseCalendar";
 
 function monthKey(dateStr: string): string {
   return dateStr.slice(0, 7); // YYYY-MM
@@ -17,6 +18,7 @@ function monthLabel(key: string): string {
 export default function StatsPage() {
   const { user } = useAuth();
   const { batches, loading } = useReceiptBatches(user?.id);
+  const [view, setView] = useState<"summary" | "calendar">("summary");
 
   const now = new Date();
   const thisMonthKey = toLocalMonthStr(now);
@@ -83,8 +85,52 @@ export default function StatsPage() {
 
   return (
     <main style={{ maxWidth: 720, margin: "0 auto", padding: 24 }}>
-      <h1 style={{ fontSize: 22, marginBottom: 16 }}>통계</h1>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+        <h1 style={{ fontSize: 22 }}>통계</h1>
+        <div style={{ display: "flex", gap: 4, background: "var(--bg)", padding: 4, borderRadius: 999 }}>
+          <button
+            type="button"
+            onClick={() => setView("summary")}
+            style={{
+              padding: "6px 14px",
+              fontSize: 13,
+              fontWeight: 600,
+              borderRadius: 999,
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              background: view === "summary" ? "var(--surface)" : "transparent",
+              color: view === "summary" ? "var(--primary)" : "var(--sub)",
+              boxShadow: view === "summary" ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
+            }}
+          >
+            요약
+          </button>
+          <button
+            type="button"
+            onClick={() => setView("calendar")}
+            style={{
+              padding: "6px 14px",
+              fontSize: 13,
+              fontWeight: 600,
+              borderRadius: 999,
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              background: view === "calendar" ? "var(--surface)" : "transparent",
+              color: view === "calendar" ? "var(--primary)" : "var(--sub)",
+              boxShadow: view === "calendar" ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
+            }}
+          >
+            달력
+          </button>
+        </div>
+      </div>
 
+      {view === "calendar" ? (
+        <ExpenseCalendar batches={batches} />
+      ) : (
+        <>
       {/* 이번 달 지출 - 스탯 타일 */}
       <section
         style={{
@@ -222,6 +268,8 @@ export default function StatsPage() {
           })}
         </div>
       </section>
+        </>
+      )}
     </main>
   );
 }
