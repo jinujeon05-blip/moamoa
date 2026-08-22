@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { usePageMeta } from "../hooks/usePageMeta";
 
 const inputStyle = {
   width: "100%",
@@ -14,6 +15,7 @@ const inputStyle = {
 };
 
 export default function LoginPage() {
+  usePageMeta("로그인 · 모아모아");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

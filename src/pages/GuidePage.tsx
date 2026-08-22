@@ -1,3 +1,5 @@
+import { usePageMeta } from "../hooks/usePageMeta";
+
 interface Step {
   title: string;
   desc: string;
@@ -134,6 +136,10 @@ function StepSection({ title, steps }: { title: string; steps: Step[] }) {
 }
 
 export default function GuidePage() {
+  usePageMeta(
+    "이용 가이드 · 모아모아",
+    "모아모아로 영수증을 업로드하고 정리하는 방법, 금액 자동 인식, 마이페이지 활용법을 안내합니다."
+  );
   return (
     <main style={{ maxWidth: 720, margin: "0 auto", padding: 24 }}>
       <h1 style={{ fontSize: 24, marginBottom: 4 }}>이용 가이드</h1>

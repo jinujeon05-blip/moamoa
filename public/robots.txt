@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /mypage
+Disallow: /stats
+Disallow: /reset-password
+
+Sitemap: https://moamoa-rho.vercel.app/sitemap.xml

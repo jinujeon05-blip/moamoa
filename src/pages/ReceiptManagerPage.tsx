@@ -6,8 +6,13 @@ import A4Sheet from "../components/A4Sheet";
 import SummaryBar from "../components/SummaryBar";
 import SaveBatchPanel from "../components/SaveBatchPanel";
 import { exportPagesToPdf, renderPagesToPdfBlob } from "../utils/pdfExport";
+import { usePageMeta } from "../hooks/usePageMeta";
 
 export default function ReceiptManagerPage() {
+  usePageMeta(
+    "모아모아 · 영수증 업로드하고 A4로 정리하기",
+    "영수증 이미지를 업로드해 A4 용지 형태로 정렬하고 PDF로 다운로드하세요. 지출 합계도 자동으로 계산돼요."
+  );
   const { receipts, addFiles, updateAmount, updateMemo, removeReceipt, clearAll, total } =
     useReceipts();
   const a4ContainerRef = useRef<HTMLDivElement>(null);

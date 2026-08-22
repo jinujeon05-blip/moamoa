@@ -1,0 +1,45 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F2F4F6" />
+  <rect x="0" y="0" width="1200" height="630" fill="#3182F6" opacity="0.04" />
+
+  <g transform="translate(140, 195)">
+    <rect width="120" height="120" rx="34" fill="#3182F6" />
+    <rect
+      x="26"
+      y="30"
+      width="52.5"
+      height="71.25"
+      rx="9.4"
+      fill="#ffffff"
+      opacity="0.45"
+      transform="rotate(-9 52.5 65.6)"
+    />
+    <rect
+      x="41.25"
+      y="22.5"
+      width="52.5"
+      height="71.25"
+      rx="9.4"
+      fill="#ffffff"
+      transform="rotate(7 67.5 58.1)"
+    />
+    <g transform="rotate(7 67.5 58.1)" stroke="#3182F6" stroke-width="5.25" stroke-linecap="round">
+      <line x1="54.4" y1="45" x2="84.4" y2="45" />
+      <line x1="54.4" y1="60" x2="84.4" y2="60" />
+      <line x1="54.4" y1="75" x2="75" y2="75" />
+    </g>
+  </g>
+
+  <text x="300" y="270" font-family="Arial, sans-serif" font-size="72" font-weight="700" fill="#191F28">
+    모아모아
+  </text>
+  <text x="300" y="320" font-family="Arial, sans-serif" font-size="26" font-weight="600" letter-spacing="3" fill="#8B95A1">
+    MOAMOA
+  </text>
+  <text x="140" y="400" font-family="Arial, sans-serif" font-size="34" font-weight="500" fill="#4E5968">
+    영수증을 업로드해 A4로 정리하고
+  </text>
+  <text x="140" y="446" font-family="Arial, sans-serif" font-size="34" font-weight="500" fill="#4E5968">
+    지출을 관리하는 가장 쉬운 방법
+  </text>
+</svg>

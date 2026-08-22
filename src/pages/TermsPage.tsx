@@ -1,8 +1,11 @@
+import { usePageMeta } from "../hooks/usePageMeta";
+
 const sectionStyle = { marginBottom: 24 };
 const headingStyle = { fontSize: 16, marginBottom: 8 };
 const textStyle = { fontSize: 14, lineHeight: 1.7, color: "var(--text)", margin: 0 };
 
 export default function TermsPage() {
+  usePageMeta("이용약관 · 모아모아");
   return (
     <main style={{ maxWidth: 720, margin: "0 auto", padding: 24 }}>
       <h1 style={{ fontSize: 22, marginBottom: 4 }}>이용약관</h1>
