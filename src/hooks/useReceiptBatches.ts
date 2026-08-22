@@ -68,5 +68,24 @@ export function useReceiptBatches(userId: string | undefined) {
     return null;
   }, []);
 
-  return { batches, loading, refetch, deleteBatch };
+  const updateBatch = useCallback(
+    async (id: string, updates: { title: string; category: string; totalAmount: number }) => {
+      const { error } = await supabase
+        .from("receipt_batches")
+        .update({ title: updates.title, category: updates.category, total_amount: updates.totalAmount })
+        .eq("id", id);
+      if (error) return error.message;
+      setBatches((prev) =>
+        prev.map((b) =>
+          b.id === id
+            ? { ...b, title: updates.title, category: updates.category, totalAmount: updates.totalAmount }
+            : b
+        )
+      );
+      return null;
+    },
+    []
+  );
+
+  return { batches, loading, refetch, deleteBatch, updateBatch };
 }

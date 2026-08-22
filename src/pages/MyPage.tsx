@@ -29,7 +29,7 @@ export default function MyPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { profile, loading: profileLoading, updateName } = useProfile(user?.id, user?.email);
-  const { batches, loading: batchesLoading, deleteBatch } = useReceiptBatches(user?.id);
+  const { batches, loading: batchesLoading, deleteBatch, updateBatch } = useReceiptBatches(user?.id);
 
   const [query, setQuery] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("latest");
@@ -81,6 +81,13 @@ export default function MyPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [preview, setPreview] = useState<{ blobUrl: string; title: string } | null>(null);
 
+  const [editingBatchId, setEditingBatchId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+  const [editAmount, setEditAmount] = useState("");
+  const [editError, setEditError] = useState("");
+  const [savingEditId, setSavingEditId] = useState<string | null>(null);
+
   const handleLogout = async () => {
     await logout();
     navigate("/");
@@ -118,6 +125,38 @@ export default function MyPage() {
   const closePreview = () => {
     if (preview) URL.revokeObjectURL(preview.blobUrl);
     setPreview(null);
+  };
+
+  const startEditingBatch = (id: string, title: string, category: string, totalAmount: number) => {
+    setEditingBatchId(id);
+    setEditTitle(title);
+    setEditCategory(category);
+    setEditAmount(String(totalAmount));
+    setEditError("");
+  };
+
+  const saveBatchEdit = async (id: string) => {
+    if (!editTitle.trim()) {
+      setEditError("제목을 입력해주세요");
+      return;
+    }
+    const amount = Number(editAmount);
+    if (!Number.isFinite(amount) || amount < 0) {
+      setEditError("금액을 확인해주세요");
+      return;
+    }
+    setSavingEditId(id);
+    const errorMessage = await updateBatch(id, {
+      title: editTitle.trim(),
+      category: editCategory,
+      totalAmount: amount,
+    });
+    setSavingEditId(null);
+    if (errorMessage) {
+      setEditError(errorMessage);
+      return;
+    }
+    setEditingBatchId(null);
   };
 
   const startEditingName = () => {
@@ -414,11 +453,86 @@ export default function MyPage() {
                   padding: 16,
                   display: "flex",
                   flexWrap: "wrap",
+                  flexDirection: editingBatchId === item.id ? "column" : "row",
                   justifyContent: "space-between",
-                  alignItems: "center",
+                  alignItems: editingBatchId === item.id ? "stretch" : "center",
                   gap: 8,
                 }}
               >
+              {editingBatchId === item.id ? (
+                <>
+                  <input
+                    type="text"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    autoFocus
+                    style={{
+                      width: "100%",
+                      boxSizing: "border-box",
+                      padding: "8px 10px",
+                      borderRadius: 8,
+                      border: "1px solid var(--border)",
+                      fontFamily: "inherit",
+                      fontSize: 14,
+                    }}
+                  />
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <select
+                      value={editCategory}
+                      onChange={(e) => setEditCategory(e.target.value)}
+                      style={{
+                        flex: 1,
+                        padding: "8px 10px",
+                        borderRadius: 8,
+                        border: "1px solid var(--border)",
+                        fontFamily: "inherit",
+                        fontSize: 14,
+                        background: "var(--surface)",
+                      }}
+                    >
+                      {CATEGORIES.map((c) => (
+                        <option key={c} value={c}>
+                          {c}
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      type="number"
+                      value={editAmount}
+                      onChange={(e) => setEditAmount(e.target.value)}
+                      style={{
+                        width: 120,
+                        padding: "8px 10px",
+                        borderRadius: 8,
+                        border: "1px solid var(--border)",
+                        fontFamily: "inherit",
+                        fontSize: 14,
+                      }}
+                    />
+                  </div>
+                  {editError && <p style={{ margin: 0, fontSize: 12, color: "#F04452" }}>{editError}</p>}
+                  <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+                    <button
+                      type="button"
+                      className="btn"
+                      style={{ padding: "6px 14px", fontSize: 13 }}
+                      onClick={() => saveBatchEdit(item.id)}
+                      disabled={savingEditId === item.id}
+                    >
+                      {savingEditId === item.id ? "저장 중..." : "저장"}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-secondary btn"
+                      style={{ padding: "6px 14px", fontSize: 13 }}
+                      onClick={() => setEditingBatchId(null)}
+                    >
+                      취소
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
                 <div style={{ minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                     <span
@@ -480,6 +594,14 @@ export default function MyPage() {
                     <button
                       type="button"
                       className="btn-ghost"
+                      style={{ fontSize: 13 }}
+                      onClick={() => startEditingBatch(item.id, item.title, item.category, item.totalAmount)}
+                    >
+                      수정
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-ghost"
                       aria-label="삭제"
                       style={{ padding: 4 }}
                       onClick={() => setConfirmDeleteId(item.id)}
@@ -490,6 +612,8 @@ export default function MyPage() {
                     </button>
                   </div>
                 )}
+                </>
+              )}
               </div>
             ))}
           </div>
