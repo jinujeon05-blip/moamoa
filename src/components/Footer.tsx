@@ -50,6 +50,9 @@ export default function Footer() {
           <Link to="/guide" style={{ color: "var(--sub)" }}>
             이용가이드
           </Link>
+          <Link to="/faq" style={{ color: "var(--sub)" }}>
+            자주 묻는 질문
+          </Link>
           {showDeleteAccount &&
             (confirming ? (
               <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
