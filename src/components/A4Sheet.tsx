@@ -13,6 +13,21 @@ const GRID_LAYOUT: Record<number, { cols: number; rows: number }> = {
   9: { cols: 3, rows: 3 },
 };
 
+const MEMO_SUGGESTIONS = [
+  "식사",
+  "카페/음료",
+  "교통비",
+  "주유",
+  "숙박",
+  "간식",
+  "회식",
+  "문구/사무용품",
+  "택배/배송",
+  "주차",
+];
+
+const MEMO_DATALIST_ID = "receipt-memo-suggestions";
+
 interface Props {
   receipts: Receipt[];
   total: number;
@@ -208,6 +223,7 @@ function FilledCell({
       <div style={{ padding: 8, display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
         <input
           type="text"
+          list={MEMO_DATALIST_ID}
           placeholder="거래처/항목"
           value={item.memo}
           onChange={(e) => onMemoChange(item.id, e.target.value)}
@@ -420,8 +436,18 @@ const A4Sheet = forwardRef<HTMLDivElement, Props>(
       boxSizing: "border-box",
     };
 
+    const memoSuggestions = Array.from(
+      new Set([...MEMO_SUGGESTIONS, ...receipts.map((r) => r.memo).filter(Boolean)])
+    );
+
     return (
       <div style={{ width: "100%" }}>
+        <datalist id={MEMO_DATALIST_ID}>
+          {memoSuggestions.map((m) => (
+            <option key={m} value={m} />
+          ))}
+        </datalist>
+
         {/* 화면에 보이는 편집 가능한 미리보기 */}
         <div style={{ display: "flex", flexDirection: "column", gap: PAGE_GAP_PX }}>
           {pages.map((pageItems, pageIndex) => (
