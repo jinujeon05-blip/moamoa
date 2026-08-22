@@ -124,12 +124,39 @@ export default function PrivacyPage() {
               <td style={tdStyle}>Google 소셜 로그인 인증</td>
               <td style={tdStyle}>이용자가 선택한 경우에 한함</td>
             </tr>
+            <tr>
+              <td style={tdStyle}>Google LLC (AdSense)</td>
+              <td style={tdStyle}>광고 게재 및 맞춤 광고 제공</td>
+              <td style={tdStyle}>광고 도입 시 적용</td>
+            </tr>
           </tbody>
         </table>
       </section>
 
       <section style={sectionStyle}>
-        <h2 style={headingStyle}>6. 정보주체의 권리와 행사 방법</h2>
+        <h2 style={headingStyle}>6. 쿠키 및 광고</h2>
+        <p style={textStyle}>
+          서비스는 Google AdSense 등 제3자 광고 서비스를 이용해 광고를 게재할 수 있습니다. Google을
+          비롯한 광고 사업자는 쿠키를 사용하여 이용자가 이 사이트 및 다른 사이트를 방문한 기록을
+          바탕으로 관심 기반 맞춤 광고를 게재할 수 있습니다.
+        </p>
+        <ul style={{ ...textStyle, paddingLeft: 20, marginTop: 8 }}>
+          <li>
+            이용자는{" "}
+            <a href="https://adssettings.google.com" target="_blank" rel="noreferrer">
+              Google 광고 설정
+            </a>
+            에서 맞춤 광고를 비활성화할 수 있습니다.
+          </li>
+          <li>
+            웹 브라우저 설정에서 쿠키 저장을 거부하거나 삭제할 수 있으며, 이 경우 서비스 일부 기능
+            이용에 제한이 있을 수 있습니다.
+          </li>
+        </ul>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>7. 정보주체의 권리와 행사 방법</h2>
         <p style={textStyle}>
           이용자는 언제든지 자신의 개인정보를 조회하거나 수정할 수 있으며, 회원 탈퇴(개인정보
           삭제)를 요청할 수 있습니다. 마이페이지에서 이름을 직접 수정할 수 있고, 그 외 권리 행사는
@@ -138,7 +165,7 @@ export default function PrivacyPage() {
       </section>
 
       <section style={sectionStyle}>
-        <h2 style={headingStyle}>7. 개인정보의 안전성 확보 조치</h2>
+        <h2 style={headingStyle}>8. 개인정보의 안전성 확보 조치</h2>
         <ul style={{ ...textStyle, paddingLeft: 20 }}>
           <li>비밀번호는 인증 제공자(Supabase Auth)를 통해 암호화되어 저장되며, 운영자도 원문을 알 수 없습니다.</li>
           <li>모든 통신 구간에 HTTPS 암호화를 적용합니다.</li>
@@ -147,7 +174,7 @@ export default function PrivacyPage() {
       </section>
 
       <section style={sectionStyle}>
-        <h2 style={headingStyle}>8. 개인정보 보호책임자</h2>
+        <h2 style={headingStyle}>9. 개인정보 보호책임자</h2>
         <p style={textStyle}>
           모아모아는 사업자 등록이 되어 있지 않은 개인 개발자가 운영하는 서비스로, 아래 연락처를
           통해 개인정보 관련 문의를 받고 있습니다.
@@ -157,7 +184,7 @@ export default function PrivacyPage() {
       </section>
 
       <section style={sectionStyle}>
-        <h2 style={headingStyle}>9. 고지의 의무</h2>
+        <h2 style={headingStyle}>10. 고지의 의무</h2>
         <p style={textStyle}>
           본 방침은 법령·정책 또는 서비스 변경에 따라 수정될 수 있으며, 변경 시 서비스 내
           공지사항을 통해 안내합니다.
