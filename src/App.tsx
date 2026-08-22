@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Header from "./components/Header";
@@ -17,6 +17,19 @@ const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const GuidePage = lazy(() => import("./pages/GuidePage"));
 const FaqPage = lazy(() => import("./pages/FaqPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
+
+// Suspense가 실제 페이지 청크 로딩까지 기다렸다가 함께 마운트하므로,
+// 이 컴포넌트가 나타나는 시점이 곧 첫 페이지가 그려질 준비가 된 시점
+function SplashRemover() {
+  useEffect(() => {
+    const splash = document.getElementById("splash");
+    if (!splash) return;
+    splash.classList.add("splash-hide");
+    const timer = setTimeout(() => splash.remove(), 400);
+    return () => clearTimeout(timer);
+  }, []);
+  return null;
+}
 
 export default function App() {
   return (
@@ -54,6 +67,7 @@ export default function App() {
                   }
                 />
               </Routes>
+              <SplashRemover />
             </Suspense>
           </div>
           <Footer />

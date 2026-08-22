@@ -22,8 +22,51 @@
     <meta name="twitter:image" content="https://moamoa-rho.vercel.app/og-image.png" />
 
     <title>모아모아 · 영수증 정리</title>
+
+    <style>
+      #splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: #f2f4f6;
+        transition: opacity 0.35s ease;
+      }
+      #splash img {
+        width: 84px;
+        height: 84px;
+        border-radius: 24px;
+      }
+      #splash h1 {
+        margin: 6px 0 0;
+        font-size: 24px;
+        font-weight: 700;
+        color: #191f28;
+        font-family: "Poppins", -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+      #splash p {
+        margin: 0;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        color: #8b95a1;
+      }
+      #splash.splash-hide {
+        opacity: 0;
+        pointer-events: none;
+      }
+    </style>
   </head>
   <body>
+    <div id="splash">
+      <img src="/pwa-192x192.png" alt="" />
+      <h1>모아모아</h1>
+      <p>MOAMOA</p>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
