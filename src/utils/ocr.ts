@@ -1,4 +1,16 @@
-const TOTAL_KEYWORDS = ["합계", "총액", "결제금액", "결제 금액", "받을금액", "받을 금액", "합 계", "total"];
+const TOTAL_KEYWORDS = [
+  "합계",
+  "총액",
+  "결제금액",
+  "결제 금액",
+  "받을금액",
+  "받을 금액",
+  "합 계",
+  "카드청구액",
+  "청구액",
+  "판매금액",
+  "total",
+];
 const EXCLUDE_LINE_KEYWORDS = ["번호", "no", "승인", "tel", "전화", "사업자"];
 const NUMBER_PATTERN = /\d{1,3}(,\d{3})+|\d{4,}/g;
 
@@ -20,7 +32,11 @@ function guessTotal(text: string): number | null {
     }
   }
 
-  const candidateNumbers = lines
+  // 상단 영역(상호명/주소/사업자번호/날짜)에는 총액이 나오지 않으므로 후보에서 제외
+  const headerLineCount = Math.min(3, Math.floor(lines.length * 0.25));
+  const bodyLines = lines.slice(headerLineCount);
+
+  const candidateNumbers = bodyLines
     .filter((line) => {
       const lower = line.toLowerCase();
       if (EXCLUDE_LINE_KEYWORDS.some((k) => lower.includes(k))) return false;
