@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function Footer() {
   const { user, deleteAccount } = useAuth();
+  const { t } = useLanguage();
   const location = useLocation();
   const navigate = useNavigate();
   const [confirming, setConfirming] = useState(false);
@@ -45,27 +47,27 @@ export default function Footer() {
           color: "var(--sub)",
         }}
       >
-        <span>© 2026 모아모아</span>
+        <span>{t("footer.copyright")}</span>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 16 }}>
           <Link to="/about" style={{ color: "var(--sub)" }}>
-            소개
+            {t("footer.about")}
           </Link>
           <Link to="/guide" style={{ color: "var(--sub)" }}>
-            이용가이드
+            {t("footer.guide")}
           </Link>
           <Link to="/faq" style={{ color: "var(--sub)" }}>
-            자주 묻는 질문
+            {t("footer.faq")}
           </Link>
           <Link to="/terms" style={{ color: "var(--sub)" }}>
-            이용약관
+            {t("footer.terms")}
           </Link>
           <Link to="/privacy" style={{ color: "var(--sub)" }}>
-            개인정보처리방침
+            {t("footer.privacy")}
           </Link>
           {showDeleteAccount &&
             (confirming ? (
               <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span>탈퇴하면 모든 데이터가 삭제돼요. 계속할까요?</span>
+                <span>{t("footer.deleteConfirmMessage")}</span>
                 <button
                   type="button"
                   onClick={handleDelete}
@@ -80,7 +82,7 @@ export default function Footer() {
                     padding: 0,
                   }}
                 >
-                  {deleting ? "탈퇴 중..." : "탈퇴"}
+                  {deleting ? t("footer.deleting") : t("footer.deleteConfirmYes")}
                 </button>
                 <button
                   type="button"
@@ -95,7 +97,7 @@ export default function Footer() {
                     padding: 0,
                   }}
                 >
-                  취소
+                  {t("footer.cancel")}
                 </button>
               </span>
             ) : (
@@ -111,7 +113,7 @@ export default function Footer() {
                   padding: 0,
                 }}
               >
-                회원 탈퇴
+                {t("footer.deleteAccount")}
               </button>
             ))}
         </div>

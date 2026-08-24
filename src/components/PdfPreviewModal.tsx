@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "../context/LanguageContext";
 
 interface Props {
   blobUrl: string;
@@ -7,6 +8,7 @@ interface Props {
 }
 
 export default function PdfPreviewModal({ blobUrl, title, onClose }: Props) {
+  const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
 
@@ -103,22 +105,22 @@ export default function PdfPreviewModal({ blobUrl, title, onClose }: Props) {
           <p style={{ margin: 0, fontWeight: 700, fontSize: 15 }}>{title}</p>
           <div style={{ display: "flex", gap: 8 }}>
             <button className="btn" style={{ padding: "8px 16px" }} onClick={handleDownload}>
-              다운로드
+              {t("pdfPreview.download")}
             </button>
             <button className="btn-secondary btn" style={{ padding: "8px 16px" }} onClick={onClose}>
-              닫기
+              {t("pdfPreview.close")}
             </button>
           </div>
         </div>
         <div style={{ flex: 1, minHeight: 0, overflow: "auto", padding: 16, background: "var(--bg)" }}>
           {status === "loading" && (
             <p style={{ textAlign: "center", color: "var(--sub)", fontSize: 14, padding: "40px 0" }}>
-              불러오는 중...
+              {t("pdfPreview.loading")}
             </p>
           )}
           {status === "error" && (
             <p style={{ textAlign: "center", color: "var(--sub)", fontSize: 14, padding: "40px 0" }}>
-              미리보기를 불러오지 못했어요. 다운로드해서 확인해주세요.
+              {t("pdfPreview.error")}
             </p>
           )}
           <div ref={containerRef} />

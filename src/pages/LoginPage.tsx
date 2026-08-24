@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 import { usePageMeta } from "../hooks/usePageMeta";
 
 const inputStyle = {
@@ -21,6 +22,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const { signIn, signInWithProvider } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
@@ -44,15 +46,15 @@ export default function LoginPage() {
 
   return (
     <main style={{ maxWidth: 380, margin: "60px auto", padding: "0 24px" }}>
-      <h1 style={{ fontSize: 24, textAlign: "center", marginBottom: 8 }}>로그인</h1>
+      <h1 style={{ fontSize: 24, textAlign: "center", marginBottom: 8 }}>{t("login.title")}</h1>
       <p style={{ textAlign: "center", color: "var(--sub)", fontSize: 14, marginBottom: 32 }}>
-        모아모아에 오신 걸 환영해요
+        {t("login.subtitle")}
       </p>
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <input
           type="email"
-          placeholder="이메일"
+          placeholder={t("login.emailPlaceholder")}
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -60,7 +62,7 @@ export default function LoginPage() {
         />
         <input
           type="password"
-          placeholder="비밀번호"
+          placeholder={t("login.passwordPlaceholder")}
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -69,31 +71,31 @@ export default function LoginPage() {
         {error && <p style={{ color: "#F04452", fontSize: 13, margin: 0 }}>{error}</p>}
         <div style={{ textAlign: "right" }}>
           <Link to="/forgot-password" style={{ color: "var(--sub)", fontSize: 13 }}>
-            비밀번호를 잊으셨나요?
+            {t("login.forgotPassword")}
           </Link>
         </div>
         <button type="submit" className="btn" style={{ marginTop: 8 }} disabled={submitting}>
-          {submitting ? "로그인 중..." : "로그인"}
+          {submitting ? t("login.submitting") : t("login.submit")}
         </button>
       </form>
 
       <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "24px 0" }}>
         <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
-        <span style={{ fontSize: 12, color: "var(--sub)" }}>또는</span>
+        <span style={{ fontSize: 12, color: "var(--sub)" }}>{t("common.or")}</span>
         <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <button type="button" className="btn-secondary btn" onClick={() => handleProvider("google")}>
-          Google로 계속하기
+          {t("common.continueGoogle")}
         </button>
         {/* 카카오 로그인: 사업자 등록 후 동의항목(이메일) 설정 완료되면 다시 노출 */}
       </div>
 
       <p style={{ textAlign: "center", fontSize: 14, color: "var(--sub)", marginTop: 28 }}>
-        아직 계정이 없으신가요?{" "}
+        {t("login.noAccount")}{" "}
         <Link to="/signup" style={{ color: "var(--primary)", fontWeight: 600 }}>
-          회원가입
+          {t("login.signupLink")}
         </Link>
       </p>
     </main>

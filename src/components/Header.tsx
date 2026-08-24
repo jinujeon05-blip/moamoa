@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 import Logo from "./Logo";
 
 export default function Header() {
   const { user } = useAuth();
+  const { language, setLanguage, t } = useLanguage();
 
   return (
     <header
@@ -54,6 +56,55 @@ export default function Header() {
         </Link>
 
         <nav style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              background: "var(--bg)",
+              borderRadius: 999,
+              padding: 2,
+              flexShrink: 0,
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => setLanguage("ko")}
+              aria-label="한국어"
+              style={{
+                padding: "4px 9px",
+                fontSize: 12,
+                fontWeight: 700,
+                borderRadius: 999,
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "inherit",
+                background: language === "ko" ? "var(--surface)" : "transparent",
+                color: language === "ko" ? "var(--primary)" : "var(--sub)",
+                boxShadow: language === "ko" ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
+              }}
+            >
+              KR
+            </button>
+            <button
+              type="button"
+              onClick={() => setLanguage("vi")}
+              aria-label="Tiếng Việt"
+              style={{
+                padding: "4px 9px",
+                fontSize: 12,
+                fontWeight: 700,
+                borderRadius: 999,
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "inherit",
+                background: language === "vi" ? "var(--surface)" : "transparent",
+                color: language === "vi" ? "var(--primary)" : "var(--sub)",
+                boxShadow: language === "vi" ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
+              }}
+            >
+              VN
+            </button>
+          </div>
           {user ? (
             <>
               <Link
@@ -61,14 +112,14 @@ export default function Header() {
                 className="btn-ghost btn header-nav-btn"
                 style={{ textDecoration: "none", whiteSpace: "nowrap" }}
               >
-                통계
+                {t("header.stats")}
               </Link>
               <Link
                 to="/mypage"
                 className="btn-secondary btn header-nav-btn"
                 style={{ textDecoration: "none", whiteSpace: "nowrap" }}
               >
-                마이페이지
+                {t("header.mypage")}
               </Link>
             </>
           ) : (
@@ -78,14 +129,14 @@ export default function Header() {
                 className="btn-ghost btn header-nav-btn"
                 style={{ textDecoration: "none", whiteSpace: "nowrap" }}
               >
-                로그인
+                {t("header.login")}
               </Link>
               <Link
                 to="/signup"
                 className="btn header-nav-btn"
                 style={{ textDecoration: "none", whiteSpace: "nowrap" }}
               >
-                회원가입
+                {t("header.signup")}
               </Link>
             </>
           )}

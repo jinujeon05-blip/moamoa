@@ -1,4 +1,5 @@
 import { usePageMeta } from "../hooks/usePageMeta";
+import { useLanguage } from "../context/LanguageContext";
 
 const sectionStyle = { marginBottom: 20 };
 const textStyle = { fontSize: 14, lineHeight: 1.7, color: "var(--text)", margin: 0 };
@@ -8,7 +9,7 @@ interface QA {
   a: string;
 }
 
-const faqs: QA[] = [
+const faqsKo: QA[] = [
   {
     q: "모아모아는 무료인가요?",
     a: "네, 모든 기능을 무료로 이용할 수 있어요. 영수증 업로드, A4 정리, PDF 다운로드, 마이페이지 저장, 통계, 엑셀 다운로드까지 별도 비용 없이 사용하실 수 있습니다.",
@@ -47,16 +48,61 @@ const faqs: QA[] = [
   },
 ];
 
+const faqsVi: QA[] = [
+  {
+    q: "MoaMoa có miễn phí không?",
+    a: "Có, mọi tính năng đều miễn phí. Bạn có thể tải hóa đơn lên, sắp xếp A4, tải PDF, lưu vào trang cá nhân, xem thống kê và tải Excel mà không mất phí.",
+  },
+  {
+    q: "Có thể dùng mà không cần đăng ký không?",
+    a: "Tính năng cơ bản — tải hóa đơn lên, sắp xếp A4 và tải PDF — có thể dùng mà không cần đăng nhập. Tuy nhiên, để lưu lịch sử và xem lại sau, bạn cần đăng ký tài khoản.",
+  },
+  {
+    q: "Có thể tải lên tối đa bao nhiêu hóa đơn?",
+    a: "Không giới hạn số lượng. Khi tải nhiều ảnh cùng lúc, hệ thống sẽ tự động chia 6 hóa đơn mỗi trang A4, và số trang sẽ tự động tăng khi cần.",
+  },
+  {
+    q: "Nhận diện số tiền tự động (OCR) chính xác đến mức nào?",
+    a: "Hệ thống nhận diện chữ trong ảnh hóa đơn và ưu tiên tìm phần thể hiện tổng số tiền như \"tổng cộng\" hoặc \"số tiền thanh toán\" để tự động điền. Tuy nhiên độ chính xác có thể khác nhau tùy chất lượng ảnh và định dạng hóa đơn, vì vậy hãy luôn kiểm tra lại số tiền được nhận diện và sửa nếu cần.",
+  },
+  {
+    q: "Ảnh hóa đơn đã tải lên có được lưu trữ an toàn không?",
+    a: "Lịch sử đã lưu sau khi đăng nhập chỉ có thể truy cập bằng chính tài khoản của bạn, được bảo vệ bằng kết nối mã hóa và kiểm soát truy cập. Xem chi tiết tại Chính sách bảo mật.",
+  },
+  {
+    q: "Có thể dùng trên nhiều thiết bị không?",
+    a: "Có. Sau khi đăng nhập, lịch sử đã lưu có thể xem trên máy tính hoặc điện thoại bằng cùng một tài khoản. Bạn cũng có thể thêm vào màn hình chính trên trình duyệt di động để dùng như một ứng dụng.",
+  },
+  {
+    q: "Nếu lưu nhầm thì phải làm sao?",
+    a: "Trong lịch sử hóa đơn ở trang cá nhân, bạn có thể nhấn \"Sửa\" ở từng mục để đổi tiêu đề, danh mục, số tiền, hoặc nhấn biểu tượng thùng rác để xóa.",
+  },
+  {
+    q: "Có hỗ trợ đăng nhập bằng Kakao không?",
+    a: "Hiện tại chỉ hỗ trợ email/mật khẩu và đăng nhập Google. Đăng nhập Kakao đang được chuẩn bị.",
+  },
+  {
+    q: "Xóa tài khoản thì dữ liệu sẽ ra sao?",
+    a: "Khi nhấn \"Xóa tài khoản\" ở cuối trang cá nhân, tài khoản cùng toàn bộ lịch sử và file PDF đã lưu sẽ bị xóa ngay lập tức và không thể khôi phục.",
+  },
+];
+
 export default function FaqPage() {
+  const { language, t } = useLanguage();
+  const faqs = language === "vi" ? faqsVi : faqsKo;
   usePageMeta(
-    "자주 묻는 질문 · 모아모아",
-    "모아모아 이용 요금, 영수증 업로드 개수, 금액 자동 인식 정확도, 데이터 보관 등 자주 묻는 질문을 모았어요."
+    language === "vi" ? "Câu hỏi thường gặp · MoaMoa" : "자주 묻는 질문 · 모아모아",
+    language === "vi"
+      ? "Tổng hợp câu hỏi thường gặp về phí sử dụng, số lượng hóa đơn tải lên, độ chính xác OCR và lưu trữ dữ liệu của MoaMoa."
+      : "모아모아 이용 요금, 영수증 업로드 개수, 금액 자동 인식 정확도, 데이터 보관 등 자주 묻는 질문을 모았어요."
   );
   return (
     <main style={{ maxWidth: 720, margin: "0 auto", padding: 24 }}>
-      <h1 style={{ fontSize: 22, marginBottom: 4 }}>자주 묻는 질문</h1>
+      <h1 style={{ fontSize: 22, marginBottom: 4 }}>{t("footer.faq")}</h1>
       <p style={{ fontSize: 13, color: "var(--sub)", marginBottom: 28 }}>
-        모아모아를 사용하시면서 자주 궁금해하시는 내용을 모았어요.
+        {language === "vi"
+          ? "Tổng hợp những câu hỏi bạn thường thắc mắc khi sử dụng MoaMoa."
+          : "모아모아를 사용하시면서 자주 궁금해하시는 내용을 모았어요."}
       </p>
 
       {faqs.map((item) => (
@@ -67,7 +113,9 @@ export default function FaqPage() {
       ))}
 
       <p style={{ fontSize: 13, color: "var(--sub)", textAlign: "center", marginTop: 20 }}>
-        더 궁금한 점은 jinujeon05@gmail.com 으로 문의해주세요.
+        {language === "vi"
+          ? "Nếu còn thắc mắc, vui lòng liên hệ jinujeon05@gmail.com."
+          : "더 궁금한 점은 jinujeon05@gmail.com 으로 문의해주세요."}
       </p>
     </main>
   );

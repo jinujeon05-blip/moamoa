@@ -1,13 +1,13 @@
 import { usePageMeta } from "../hooks/usePageMeta";
+import { useLanguage } from "../context/LanguageContext";
 
 const sectionStyle = { marginBottom: 24 };
 const headingStyle = { fontSize: 16, marginBottom: 8 };
 const textStyle = { fontSize: 14, lineHeight: 1.7, color: "var(--text)", margin: 0 };
 
-export default function TermsPage() {
-  usePageMeta("이용약관 · 모아모아");
+function KoContent() {
   return (
-    <main style={{ maxWidth: 720, margin: "0 auto", padding: 24 }}>
+    <>
       <h1 style={{ fontSize: 22, marginBottom: 4 }}>이용약관</h1>
       <p style={{ fontSize: 13, color: "var(--sub)", marginBottom: 28 }}>시행일: 2026년 8월 22일</p>
 
@@ -100,6 +100,122 @@ export default function TermsPage() {
           서비스 이용과 관련한 문의는 jinujeon05@gmail.com 으로 연락해주시기 바랍니다.
         </p>
       </section>
+    </>
+  );
+}
+
+function ViContent() {
+  return (
+    <>
+      <h1 style={{ fontSize: 22, marginBottom: 4 }}>Điều khoản sử dụng</h1>
+      <p style={{ fontSize: 13, color: "var(--sub)", marginBottom: 28 }}>Ngày hiệu lực: 22/08/2026</p>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>Điều 1 (Mục đích)</h2>
+        <p style={textStyle}>
+          Điều khoản này quy định quyền, nghĩa vụ, trách nhiệm và các vấn đề cần thiết khác giữa
+          Nhà điều hành dịch vụ (sau đây gọi là "Nhà điều hành") và người dùng khi sử dụng MoaMoa
+          (sau đây gọi là "Dịch vụ").
+        </p>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>Điều 2 (Thông tin Nhà điều hành)</h2>
+        <p style={textStyle}>
+          MoaMoa là dịch vụ do một lập trình viên cá nhân không có đăng ký kinh doanh vận hành. Mọi
+          thắc mắc vui lòng liên hệ qua email bên dưới.
+          <br />
+          Liên hệ: jinujeon05@gmail.com
+        </p>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>Điều 3 (Nội dung dịch vụ)</h2>
+        <p style={textStyle}>
+          Dịch vụ cung cấp tính năng sắp xếp ảnh hóa đơn do người dùng tải lên theo khổ giấy A4,
+          tải xuống dưới dạng PDF, và nếu muốn, lưu vào tài khoản để xem lịch sử chi tiêu và thống
+          kê.
+        </p>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>Điều 4 (Hiệu lực và thay đổi điều khoản)</h2>
+        <p style={textStyle}>
+          Điều khoản này có hiệu lực khi được đăng trên màn hình dịch vụ. Nhà điều hành có thể thay
+          đổi điều khoản trong phạm vi không vi phạm pháp luật liên quan khi cần thiết, và điều
+          khoản đã thay đổi sẽ được áp dụng sau khi thông báo trong dịch vụ.
+        </p>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>Điều 5 (Đăng ký thành viên và tài khoản)</h2>
+        <p style={textStyle}>
+          Người dùng có thể đăng ký bằng email/mật khẩu hoặc tài khoản Google. Người dùng có trách
+          nhiệm quản lý an toàn thông tin tài khoản của mình, và Nhà điều hành không chịu trách
+          nhiệm về thiệt hại do rò rỉ thông tin tài khoản, trừ trường hợp do cố ý hoặc lỗi nghiêm
+          trọng của Nhà điều hành.
+        </p>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>Điều 6 (Nghĩa vụ của người dùng)</h2>
+        <p style={textStyle}>
+          Người dùng phải tuân thủ pháp luật liên quan, quy định của điều khoản này, hướng dẫn sử
+          dụng và các thông báo liên quan đến dịch vụ, và không được thực hiện các hành vi sau.
+        </p>
+        <ul style={{ ...textStyle, paddingLeft: 20, marginTop: 8 }}>
+          <li>Sử dụng dịch vụ bằng cách đánh cắp thông tin của người khác</li>
+          <li>Hành vi có thể cản trở hoạt động ổn định của dịch vụ</li>
+          <li>Tải lên nội dung vi phạm pháp luật hoặc thuần phong mỹ tục</li>
+        </ul>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>Điều 7 (Quyền sở hữu nội dung)</h2>
+        <p style={textStyle}>
+          Quyền đối với ảnh hóa đơn người dùng tải lên và PDF được tạo ra từ đó thuộc về người
+          dùng. Nhà điều hành chỉ xử lý nội dung đó trong phạm vi mục đích cung cấp dịch vụ, và
+          không sử dụng cho mục đích khác nếu không có sự đồng ý riêng.
+        </p>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>Điều 8 (Điều khoản miễn trừ trách nhiệm)</h2>
+        <p style={textStyle}>
+          Dịch vụ được cung cấp miễn phí, và trừ khi pháp luật liên quan có quy định đặc biệt, Nhà
+          điều hành không chịu trách nhiệm về thiệt hại phát sinh liên quan đến việc sử dụng dịch
+          vụ. Tổng số tiền do dịch vụ tính toán và sắp xếp dựa trên giá trị người dùng tự nhập, và
+          trách nhiệm xác nhận cuối cùng về độ chính xác thuộc về người dùng. Nhà điều hành không
+          chịu trách nhiệm về việc gián đoạn dịch vụ do thiên tai, sự cố hệ thống hoặc các trường
+          hợp bất khả kháng khác.
+        </p>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>Điều 9 (Ngừng dịch vụ và dữ liệu)</h2>
+        <p style={textStyle}>
+          Nhà điều hành có thể sửa đổi hoặc ngừng một phần hoặc toàn bộ dịch vụ khi cần thiết vì lý
+          do vận hành hoặc kỹ thuật. Nếu việc ngừng dịch vụ được lên kế hoạch trước, thông báo sẽ
+          được đưa ra trước.
+        </p>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>Điều 10 (Liên hệ)</h2>
+        <p style={textStyle}>
+          Mọi thắc mắc liên quan đến việc sử dụng dịch vụ vui lòng liên hệ jinujeon05@gmail.com.
+        </p>
+      </section>
+    </>
+  );
+}
+
+export default function TermsPage() {
+  const { language } = useLanguage();
+  usePageMeta(language === "vi" ? "Điều khoản sử dụng · MoaMoa" : "이용약관 · 모아모아");
+  return (
+    <main style={{ maxWidth: 720, margin: "0 auto", padding: 24 }}>
+      {language === "vi" ? <ViContent /> : <KoContent />}
     </main>
   );
 }

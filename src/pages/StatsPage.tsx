@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 import { useReceiptBatches } from "../hooks/useReceiptBatches";
 import { CATEGORY_COLORS } from "../constants/categoryColors";
-import { formatWon } from "../utils/format";
+import { getCategoryLabel } from "../constants/categories";
+import { formatCurrency } from "../utils/format";
 import { toLocalMonthStr } from "../utils/date";
 import ExpenseCalendar from "../components/ExpenseCalendar";
 
@@ -10,15 +12,16 @@ function monthKey(dateStr: string): string {
   return dateStr.slice(0, 7); // YYYY-MM
 }
 
-function monthLabel(key: string): string {
-  const [, m] = key.split("-");
-  return `${Number(m)}월`;
-}
-
 export default function StatsPage() {
   const { user } = useAuth();
+  const { t, language } = useLanguage();
   const { batches, loading } = useReceiptBatches(user?.id);
   const [view, setView] = useState<"summary" | "calendar">("summary");
+
+  const monthLabel = (key: string): string => {
+    const [, m] = key.split("-");
+    return language === "vi" ? `Th${Number(m)}` : `${Number(m)}월`;
+  };
 
   const now = new Date();
   const thisMonthKey = toLocalMonthStr(now);
@@ -66,7 +69,7 @@ export default function StatsPage() {
     return (
       <main style={{ maxWidth: 720, margin: "0 auto", padding: 24 }}>
         <p style={{ color: "var(--sub)", fontSize: 14, textAlign: "center", padding: "60px 0" }}>
-          불러오는 중...
+          {t("common.loading")}
         </p>
       </main>
     );
@@ -75,9 +78,9 @@ export default function StatsPage() {
   if (batches.length === 0) {
     return (
       <main style={{ maxWidth: 720, margin: "0 auto", padding: 24 }}>
-        <h1 style={{ fontSize: 22, marginBottom: 16 }}>통계</h1>
+        <h1 style={{ fontSize: 22, marginBottom: 16 }}>{t("stats.title")}</h1>
         <p style={{ color: "var(--sub)", fontSize: 14, textAlign: "center", padding: "60px 0" }}>
-          아직 정리한 영수증 내역이 없어요. 내역을 저장하면 통계가 여기에 표시돼요.
+          {t("stats.emptyMessage")}
         </p>
       </main>
     );
@@ -86,7 +89,7 @@ export default function StatsPage() {
   return (
     <main style={{ maxWidth: 720, margin: "0 auto", padding: 24 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-        <h1 style={{ fontSize: 22 }}>통계</h1>
+        <h1 style={{ fontSize: 22 }}>{t("stats.title")}</h1>
         <div style={{ display: "flex", gap: 4, background: "var(--bg)", padding: 4, borderRadius: 999 }}>
           <button
             type="button"
@@ -104,7 +107,7 @@ export default function StatsPage() {
               boxShadow: view === "summary" ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
             }}
           >
-            요약
+            {t("stats.viewSummary")}
           </button>
           <button
             type="button"
@@ -122,7 +125,7 @@ export default function StatsPage() {
               boxShadow: view === "calendar" ? "0 1px 4px rgba(0,0,0,0.08)" : "none",
             }}
           >
-            달력
+            {t("stats.viewCalendar")}
           </button>
         </div>
       </div>
@@ -141,10 +144,10 @@ export default function StatsPage() {
           marginBottom: 20,
         }}
       >
-        <p style={{ margin: 0, fontSize: 13, color: "var(--sub)" }}>이번 달 지출</p>
+        <p style={{ margin: 0, fontSize: 13, color: "var(--sub)" }}>{t("stats.thisMonthSpend")}</p>
         <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginTop: 4 }}>
           <span style={{ fontSize: 32, fontWeight: 700, color: "#191f28" }}>
-            {formatWon(thisMonthTotal)}
+            {formatCurrency(thisMonthTotal, language)}
           </span>
           {delta !== null && (
             <span
@@ -154,7 +157,7 @@ export default function StatsPage() {
                 color: delta > 0 ? "#d03b3b" : delta < 0 ? "#006300" : "var(--sub)",
               }}
             >
-              지난달 대비 {delta > 0 ? "+" : ""}
+              {t("stats.vsLastMonth")} {delta > 0 ? "+" : ""}
               {delta}%
             </span>
           )}
@@ -171,7 +174,7 @@ export default function StatsPage() {
           marginBottom: 20,
         }}
       >
-        <h2 style={{ fontSize: 15, marginBottom: 16 }}>카테고리별 지출</h2>
+        <h2 style={{ fontSize: 15, marginBottom: 16 }}>{t("stats.byCategory")}</h2>
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {categoryTotals.map(([category, amount]) => {
             const pct = categoryGrandTotal === 0 ? 0 : Math.round((amount / categoryGrandTotal) * 100);
@@ -196,10 +199,10 @@ export default function StatsPage() {
                         flexShrink: 0,
                       }}
                     />
-                    {category}
+                    {getCategoryLabel(category, language)}
                   </span>
                   <span style={{ color: "var(--sub)" }}>
-                    {formatWon(amount)} · {pct}%
+                    {formatCurrency(amount, language)} · {pct}%
                   </span>
                 </div>
                 <div style={{ height: 10, background: "var(--bg)", borderRadius: 999, overflow: "hidden" }}>
@@ -227,7 +230,7 @@ export default function StatsPage() {
           padding: 20,
         }}
       >
-        <h2 style={{ fontSize: 15, marginBottom: 16 }}>최근 6개월 추이</h2>
+        <h2 style={{ fontSize: 15, marginBottom: 16 }}>{t("stats.recent6Months")}</h2>
         <div style={{ display: "flex", alignItems: "flex-end", gap: 12, height: 160 }}>
           {monthlyTotals.map(([key, amount]) => {
             const heightPct = monthlyMax === 0 ? 0 : (amount / monthlyMax) * 100;

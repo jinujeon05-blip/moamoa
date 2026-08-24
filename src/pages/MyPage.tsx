@@ -1,13 +1,14 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 import { useProfile } from "../hooks/useProfile";
 import { useReceiptBatches } from "../hooks/useReceiptBatches";
 import { supabase } from "../lib/supabaseClient";
-import { formatWon } from "../utils/format";
+import { formatCurrency } from "../utils/format";
 import { highlightMatch } from "../utils/highlightText";
 import PdfPreviewModal from "../components/PdfPreviewModal";
-import { CATEGORIES } from "../constants/categories";
+import { CATEGORIES, getCategoryLabel } from "../constants/categories";
 import { toLocalDateStr as toDateStr } from "../utils/date";
 import { exportBatchesToExcel } from "../utils/excelExport";
 
@@ -28,6 +29,7 @@ function lastMonthRange(): [string, string] {
 
 export default function MyPage() {
   const { user, logout } = useAuth();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
   const { profile, loading: profileLoading, updateName } = useProfile(user?.id, user?.email);
   const { batches, loading: batchesLoading, deleteBatch, updateBatch } = useReceiptBatches(user?.id);
@@ -101,7 +103,7 @@ export default function MyPage() {
     setDeletingId(null);
     setConfirmDeleteId(null);
     if (errorMessage) {
-      alert("삭제 중 문제가 발생했어요: " + errorMessage);
+      alert(t("myPage.deleteErrorPrefix") + errorMessage);
     }
   };
 
@@ -110,14 +112,14 @@ export default function MyPage() {
     const { data, error } = await supabase.storage.from("receipt-pdfs").createSignedUrl(pdfPath, 60);
     if (error || !data?.signedUrl) {
       setOpeningId(null);
-      alert("PDF를 여는 중 문제가 발생했어요: " + (error?.message ?? "알 수 없는 오류"));
+      alert(t("myPage.pdfOpenErrorPrefix") + (error?.message ?? t("myPage.pdfOpenErrorUnknown")));
       return;
     }
 
     const res = await fetch(data.signedUrl);
     setOpeningId(null);
     if (!res.ok) {
-      alert("PDF를 불러오지 못했어요");
+      alert(t("myPage.pdfLoadError"));
       return;
     }
     const blob = await res.blob();
@@ -139,12 +141,12 @@ export default function MyPage() {
 
   const saveBatchEdit = async (id: string) => {
     if (!editTitle.trim()) {
-      setEditError("제목을 입력해주세요");
+      setEditError(t("myPage.editTitleRequired"));
       return;
     }
     const amount = Number(editAmount);
     if (!Number.isFinite(amount) || amount < 0) {
-      setEditError("금액을 확인해주세요");
+      setEditError(t("myPage.editAmountInvalid"));
       return;
     }
     setSavingEditId(id);
@@ -164,7 +166,7 @@ export default function MyPage() {
   const handleExportExcel = async () => {
     setExporting(true);
     try {
-      await exportBatchesToExcel(filtered, `모아모아_영수증정리내역_${toDateStr(new Date())}.xlsx`);
+      await exportBatchesToExcel(filtered, `moamoa_receipts_${toDateStr(new Date())}.xlsx`, language);
     } finally {
       setExporting(false);
     }
@@ -178,7 +180,7 @@ export default function MyPage() {
 
   const saveName = async () => {
     if (!nameDraft.trim()) {
-      setNameError("이름을 입력해주세요");
+      setNameError(t("myPage.nameErrorRequired"));
       return;
     }
     setSavingName(true);
@@ -227,7 +229,7 @@ export default function MyPage() {
           </div>
           <div style={{ minWidth: 0, flex: 1 }}>
             {profileLoading ? (
-              <p style={{ margin: 0, color: "var(--sub)", fontSize: 14 }}>불러오는 중...</p>
+              <p style={{ margin: 0, color: "var(--sub)", fontSize: 14 }}>{t("common.loading")}</p>
             ) : editingName ? (
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 <div style={{ display: "flex", gap: 8 }}>
@@ -246,14 +248,14 @@ export default function MyPage() {
                     }}
                   />
                   <button className="btn" style={{ padding: "6px 14px" }} onClick={saveName} disabled={savingName}>
-                    저장
+                    {t("common.save")}
                   </button>
                   <button
                     className="btn-secondary btn"
                     style={{ padding: "6px 14px" }}
                     onClick={() => setEditingName(false)}
                   >
-                    취소
+                    {t("common.cancel")}
                   </button>
                 </div>
                 {nameError && <p style={{ margin: 0, fontSize: 12, color: "#F04452" }}>{nameError}</p>}
@@ -278,7 +280,7 @@ export default function MyPage() {
                   onClick={startEditingName}
                   style={{ fontSize: 12, flexShrink: 0, whiteSpace: "nowrap" }}
                 >
-                  수정
+                  {t("myPage.editName")}
                 </button>
               </div>
             )}
@@ -297,7 +299,7 @@ export default function MyPage() {
           </div>
         </div>
         <button className="btn-secondary btn" onClick={handleLogout} style={{ flexShrink: 0 }}>
-          로그아웃
+          {t("myPage.logout")}
         </button>
       </section>
 
@@ -313,7 +315,7 @@ export default function MyPage() {
             marginBottom: 12,
           }}
         >
-          <h2 style={{ fontSize: 18 }}>영수증 정리 내역</h2>
+          <h2 style={{ fontSize: 18 }}>{t("myPage.historyHeading")}</h2>
           <button
             type="button"
             className="btn-secondary btn"
@@ -321,14 +323,14 @@ export default function MyPage() {
             onClick={handleExportExcel}
             disabled={exporting || filtered.length === 0}
           >
-            {exporting ? "내보내는 중..." : "엑셀 다운로드"}
+            {exporting ? t("myPage.exporting") : t("myPage.exportExcel")}
           </button>
         </div>
 
         <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
           <input
             type="text"
-            placeholder="내역 검색 (제목)"
+            placeholder={t("myPage.searchPlaceholder")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             style={{
@@ -354,8 +356,8 @@ export default function MyPage() {
               background: "var(--surface)",
             }}
           >
-            <option value="latest">최신순</option>
-            <option value="amount">금액순</option>
+            <option value="latest">{t("myPage.sortLatest")}</option>
+            <option value="amount">{t("myPage.sortAmount")}</option>
           </select>
         </div>
 
@@ -375,7 +377,7 @@ export default function MyPage() {
             style={{ padding: "6px 12px", fontSize: 13 }}
             onClick={resetFilters}
           >
-            전체
+            {t("myPage.filterAll")}
           </button>
           <button
             type="button"
@@ -387,7 +389,7 @@ export default function MyPage() {
               setDateTo(to);
             }}
           >
-            이번 달
+            {t("myPage.filterThisMonth")}
           </button>
           <button
             type="button"
@@ -399,10 +401,10 @@ export default function MyPage() {
               setDateTo(to);
             }}
           >
-            지난 달
+            {t("myPage.filterLastMonth")}
           </button>
 
-          <span style={{ color: "var(--sub)" }}>기간</span>
+          <span style={{ color: "var(--sub)" }}>{t("myPage.filterPeriod")}</span>
           <input
             type="date"
             value={dateFrom}
@@ -429,7 +431,7 @@ export default function MyPage() {
             }}
           />
 
-          <span style={{ color: "var(--sub)", marginLeft: 8 }}>카테고리</span>
+          <span style={{ color: "var(--sub)", marginLeft: 8 }}>{t("myPage.filterCategory")}</span>
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
@@ -442,18 +444,18 @@ export default function MyPage() {
               background: "var(--surface)",
             }}
           >
-            <option value="">전체</option>
+            <option value="">{t("myPage.filterAll")}</option>
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>
-                {c}
+                {getCategoryLabel(c, language)}
               </option>
             ))}
           </select>
 
-          <span style={{ color: "var(--sub)", marginLeft: 8 }}>금액</span>
+          <span style={{ color: "var(--sub)", marginLeft: 8 }}>{t("myPage.filterAmount")}</span>
           <input
             type="number"
-            placeholder="최소"
+            placeholder={t("myPage.filterMin")}
             value={amountMin}
             onChange={(e) => setAmountMin(e.target.value)}
             style={{
@@ -468,7 +470,7 @@ export default function MyPage() {
           <span style={{ color: "var(--sub)" }}>~</span>
           <input
             type="number"
-            placeholder="최대"
+            placeholder={t("myPage.filterMax")}
             value={amountMax}
             onChange={(e) => setAmountMax(e.target.value)}
             style={{
@@ -488,18 +490,18 @@ export default function MyPage() {
               style={{ fontSize: 13 }}
               onClick={resetFilters}
             >
-              필터 초기화
+              {t("myPage.filterReset")}
             </button>
           )}
         </div>
 
         {batchesLoading ? (
           <p style={{ color: "var(--sub)", fontSize: 14, textAlign: "center", padding: "40px 0" }}>
-            불러오는 중...
+            {t("common.loading")}
           </p>
         ) : filtered.length === 0 ? (
           <p style={{ color: "var(--sub)", fontSize: 14, textAlign: "center", padding: "40px 0" }}>
-            {batches.length === 0 ? "아직 정리한 영수증 내역이 없어요" : "검색 결과가 없어요"}
+            {batches.length === 0 ? t("myPage.emptyNoHistory") : t("myPage.emptyNoResults")}
           </p>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -552,7 +554,7 @@ export default function MyPage() {
                     >
                       {CATEGORIES.map((c) => (
                         <option key={c} value={c}>
-                          {c}
+                          {getCategoryLabel(c, language)}
                         </option>
                       ))}
                     </select>
@@ -579,7 +581,7 @@ export default function MyPage() {
                       onClick={() => saveBatchEdit(item.id)}
                       disabled={savingEditId === item.id}
                     >
-                      {savingEditId === item.id ? "저장 중..." : "저장"}
+                      {savingEditId === item.id ? t("myPage.editSaving") : t("common.save")}
                     </button>
                     <button
                       type="button"
@@ -587,7 +589,7 @@ export default function MyPage() {
                       style={{ padding: "6px 14px", fontSize: 13 }}
                       onClick={() => setEditingBatchId(null)}
                     >
-                      취소
+                      {t("common.cancel")}
                     </button>
                   </div>
                 </>
@@ -606,17 +608,17 @@ export default function MyPage() {
                         flexShrink: 0,
                       }}
                     >
-                      {item.category}
+                      {getCategoryLabel(item.category, language)}
                     </span>
                     <p style={{ margin: 0, fontWeight: 600 }}>{highlightMatch(item.title, query)}</p>
                   </div>
                   <p style={{ margin: "4px 0 0", fontSize: 13, color: "var(--sub)" }}>
-                    {item.batchDate} · 영수증 {item.receiptCount}장
+                    {item.batchDate} · {t("myPage.receiptCount")} {item.receiptCount}{t("myPage.receiptCountUnit")}
                   </p>
                 </div>
                 {confirmDeleteId === item.id ? (
                   <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-                    <span style={{ fontSize: 13, color: "var(--sub)" }}>삭제할까요?</span>
+                    <span style={{ fontSize: 13, color: "var(--sub)" }}>{t("myPage.deleteConfirm")}</span>
                     <button
                       type="button"
                       className="btn"
@@ -624,7 +626,7 @@ export default function MyPage() {
                       onClick={() => handleDelete(item.id, item.pdfPath)}
                       disabled={deletingId === item.id}
                     >
-                      {deletingId === item.id ? "삭제 중..." : "삭제"}
+                      {deletingId === item.id ? t("myPage.deleting") : t("common.delete")}
                     </button>
                     <button
                       type="button"
@@ -632,7 +634,7 @@ export default function MyPage() {
                       style={{ padding: "6px 12px", fontSize: 13 }}
                       onClick={() => setConfirmDeleteId(null)}
                     >
-                      취소
+                      {t("common.cancel")}
                     </button>
                   </div>
                 ) : (
@@ -645,11 +647,11 @@ export default function MyPage() {
                         onClick={() => openPdf(item.id, item.pdfPath!, item.title)}
                         disabled={openingId === item.id}
                       >
-                        {openingId === item.id ? "여는 중..." : "A4 보기"}
+                        {openingId === item.id ? t("myPage.opening") : t("myPage.viewA4")}
                       </button>
                     )}
                     <p style={{ margin: 0, fontWeight: 700, color: "var(--primary)" }}>
-                      {formatWon(item.totalAmount)}
+                      {formatCurrency(item.totalAmount, language)}
                     </p>
                     <button
                       type="button"
@@ -657,12 +659,12 @@ export default function MyPage() {
                       style={{ fontSize: 13 }}
                       onClick={() => startEditingBatch(item.id, item.title, item.category, item.totalAmount)}
                     >
-                      수정
+                      {t("common.edit")}
                     </button>
                     <button
                       type="button"
                       className="btn-ghost"
-                      aria-label="삭제"
+                      aria-label={t("common.delete")}
                       style={{ padding: 4 }}
                       onClick={() => setConfirmDeleteId(item.id)}
                     >

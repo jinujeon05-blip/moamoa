@@ -1,8 +1,11 @@
 import { forwardRef } from "react";
 import type { CSSProperties } from "react";
 import type { Receipt } from "../types";
-import { formatWon } from "../utils/format";
+import { formatCurrency } from "../utils/format";
 import type { PageOrientation } from "../utils/pdfExport";
+import { useLanguage } from "../context/LanguageContext";
+import type { Language } from "../i18n/translations";
+import { translations } from "../i18n/translations";
 
 const A4_PORTRAIT = { width: 794, height: 1123 };
 const PAGE_GAP_PX = 24;
@@ -13,7 +16,7 @@ const GRID_LAYOUT: Record<number, { cols: number; rows: number }> = {
   9: { cols: 3, rows: 3 },
 };
 
-const MEMO_SUGGESTIONS = [
+const MEMO_KEYS = [
   "식사",
   "카페/음료",
   "교통비",
@@ -25,6 +28,10 @@ const MEMO_SUGGESTIONS = [
   "택배/배송",
   "주차",
 ];
+
+function getMemoSuggestions(language: Language): string[] {
+  return MEMO_KEYS.map((key) => translations[language][`a4Sheet.memo.${key}`] ?? key);
+}
 
 const MEMO_DATALIST_ID = "receipt-memo-suggestions";
 
@@ -66,6 +73,8 @@ function StaticPageContent({
   total,
   cols,
   rows,
+  t,
+  language,
 }: {
   pageItems: Receipt[];
   pageIndex: number;
@@ -74,11 +83,13 @@ function StaticPageContent({
   total: number;
   cols: number;
   rows: number;
+  t: (key: string) => string;
+  language: Language;
 }) {
   return (
     <>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 16 }}>
-        <h2 style={{ fontSize: 18 }}>모아모아 영수증 정리</h2>
+        <h2 style={{ fontSize: 18 }}>{t("a4Sheet.staticHeading")}</h2>
         <span style={{ fontSize: 12, color: "var(--sub)" }}>
           {pageIndex + 1} / {pageCount}
         </span>
@@ -113,7 +124,7 @@ function StaticPageContent({
             />
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginTop: 6 }}>
               <span style={{ color: "var(--sub)" }}>{r.memo || r.fileName}</span>
-              <span style={{ fontWeight: 600 }}>{formatWon(r.amount || 0)}</span>
+              <span style={{ fontWeight: 600 }}>{formatCurrency(r.amount || 0, language)}</span>
             </div>
           </div>
         ))}
@@ -129,7 +140,7 @@ function StaticPageContent({
               fontSize: 14,
             }}
           >
-            업로드한 영수증이 여기에 정렬됩니다
+            {t("a4Sheet.emptyMessage")}
           </div>
         )}
       </div>
@@ -147,8 +158,8 @@ function StaticPageContent({
             fontWeight: 700,
           }}
         >
-          <span style={{ color: "var(--sub)", fontWeight: 500 }}>합계</span>
-          <span style={{ color: "var(--primary)" }}>{formatWon(total)}</span>
+          <span style={{ color: "var(--sub)", fontWeight: 500 }}>{t("a4Sheet.total")}</span>
+          <span style={{ color: "var(--primary)" }}>{formatCurrency(total, language)}</span>
         </div>
       )}
     </>
@@ -170,6 +181,8 @@ function FilledCell({
   onRemove,
   onRecognize,
   recognizing,
+  t,
+  language,
 }: {
   item: Receipt;
   onAmountChange: (id: string, amount: number) => void;
@@ -177,6 +190,8 @@ function FilledCell({
   onRemove: (id: string) => void;
   onRecognize: (id: string) => void;
   recognizing: boolean;
+  t: (key: string) => string;
+  language: Language;
 }) {
   return (
     <div
@@ -193,7 +208,7 @@ function FilledCell({
       <button
         type="button"
         onClick={() => onRemove(item.id)}
-        aria-label="삭제"
+        aria-label={t("a4Sheet.deleteAria")}
         style={{
           position: "absolute",
           top: 6,
@@ -224,7 +239,7 @@ function FilledCell({
         <input
           type="text"
           list={MEMO_DATALIST_ID}
-          placeholder="거래처/항목"
+          placeholder={t("a4Sheet.memoPlaceholder")}
           value={item.memo}
           onChange={(e) => onMemoChange(item.id, e.target.value)}
           style={{
@@ -239,10 +254,12 @@ function FilledCell({
           }}
         />
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          <span style={{ fontSize: 12, color: "var(--sub)", flexShrink: 0 }}>₩</span>
+          <span style={{ fontSize: 12, color: "var(--sub)", flexShrink: 0 }}>
+            {language === "vi" ? "₫" : "₩"}
+          </span>
           <input
             type="number"
-            placeholder="금액"
+            placeholder={t("a4Sheet.amountPlaceholder")}
             value={item.amount || ""}
             onChange={(e) => onAmountChange(item.id, Number(e.target.value))}
             style={{
@@ -260,7 +277,7 @@ function FilledCell({
             type="button"
             onClick={() => onRecognize(item.id)}
             disabled={recognizing}
-            title="금액 자동 인식"
+            title={t("a4Sheet.recognizeTitle")}
             style={{
               flexShrink: 0,
               width: 26,
@@ -325,6 +342,8 @@ function InteractivePage({
   onRecognize,
   recognizingId,
   onAddClick,
+  t,
+  language,
 }: {
   pageItems: Receipt[];
   itemsPerPage: number;
@@ -340,6 +359,8 @@ function InteractivePage({
   onRecognize: (id: string) => void;
   recognizingId: string | null;
   onAddClick: () => void;
+  t: (key: string) => string;
+  language: Language;
 }) {
   const dims = pageDims(orientation);
   const slotCount = isLastPage ? Math.max(itemsPerPage, pageItems.length) : pageItems.length;
@@ -357,7 +378,7 @@ function InteractivePage({
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 14 }}>
-        <h2 style={{ fontSize: 16 }}>영수증 정리</h2>
+        <h2 style={{ fontSize: 16 }}>{t("a4Sheet.interactiveHeading")}</h2>
         <span style={{ fontSize: 12, color: "var(--sub)" }}>
           A4 {orientation === "portrait" ? "210×297mm" : "297×210mm"} · page {pageIndex + 1}/{pageCount}
         </span>
@@ -376,6 +397,8 @@ function InteractivePage({
                 onRemove={onRemove}
                 onRecognize={onRecognize}
                 recognizing={recognizingId === item.id}
+                t={t}
+                language={language}
               />
             );
           }
@@ -397,8 +420,8 @@ function InteractivePage({
             fontWeight: 700,
           }}
         >
-          <span style={{ color: "var(--sub)", fontWeight: 500 }}>총 합계</span>
-          <span style={{ color: "var(--primary)" }}>{formatWon(total)}</span>
+          <span style={{ color: "var(--sub)", fontWeight: 500 }}>{t("a4Sheet.grandTotal")}</span>
+          <span style={{ color: "var(--primary)" }}>{formatCurrency(total, language)}</span>
         </div>
       )}
     </div>
@@ -421,6 +444,7 @@ const A4Sheet = forwardRef<HTMLDivElement, Props>(
     },
     forwardedRef
   ) => {
+    const { t, language } = useLanguage();
     const { cols, rows } = GRID_LAYOUT[itemsPerPage] ?? GRID_LAYOUT[6];
     const dims = pageDims(orientation);
     const pages = paginate(receipts, itemsPerPage);
@@ -437,7 +461,7 @@ const A4Sheet = forwardRef<HTMLDivElement, Props>(
     };
 
     const memoSuggestions = Array.from(
-      new Set([...MEMO_SUGGESTIONS, ...receipts.map((r) => r.memo).filter(Boolean)])
+      new Set([...getMemoSuggestions(language), ...receipts.map((r) => r.memo).filter(Boolean)])
     );
 
     return (
@@ -467,6 +491,8 @@ const A4Sheet = forwardRef<HTMLDivElement, Props>(
               onRecognize={onRecognize}
               recognizingId={recognizingId}
               onAddClick={onAddClick}
+              t={t}
+              language={language}
             />
           ))}
         </div>
@@ -488,6 +514,8 @@ const A4Sheet = forwardRef<HTMLDivElement, Props>(
                   total={total}
                   cols={cols}
                   rows={rows}
+                  t={t}
+                  language={language}
                 />
               </div>
             ))}

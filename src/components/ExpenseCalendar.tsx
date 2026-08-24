@@ -1,13 +1,14 @@
 import { useMemo, useState } from "react";
 import type { ReceiptBatch } from "../types";
-import { formatWon } from "../utils/format";
+import { formatCurrency } from "../utils/format";
 import { CATEGORY_COLORS } from "../constants/categoryColors";
+import { useLanguage } from "../context/LanguageContext";
 
 interface Props {
   batches: ReceiptBatch[];
 }
 
-const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
+const WEEKDAY_KEYS = ["일", "월", "화", "수", "목", "금", "토"];
 
 function toDateKey(y: number, m: number, d: number): string {
   return `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
@@ -15,6 +16,7 @@ function toDateKey(y: number, m: number, d: number): string {
 
 
 export default function ExpenseCalendar({ batches }: Props) {
+  const { t, language } = useLanguage();
   const today = new Date();
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
@@ -78,7 +80,7 @@ export default function ExpenseCalendar({ batches }: Props) {
           type="button"
           className="btn-ghost"
           onClick={goPrevMonth}
-          aria-label="이전 달"
+          aria-label={t("calendar.prevMonth")}
           style={{ padding: 6 }}
         >
           <svg className="icon" style={{ width: 18, height: 18 }} viewBox="0 0 24 24">
@@ -86,13 +88,13 @@ export default function ExpenseCalendar({ batches }: Props) {
           </svg>
         </button>
         <h2 style={{ fontSize: 16, margin: 0 }}>
-          {viewYear}년 {viewMonth + 1}월
+          {language === "vi" ? `Th${viewMonth + 1}/${viewYear}` : `${viewYear}년 ${viewMonth + 1}월`}
         </h2>
         <button
           type="button"
           className="btn-ghost"
           onClick={goNextMonth}
-          aria-label="다음 달"
+          aria-label={t("calendar.nextMonth")}
           style={{ padding: 6 }}
         >
           <svg className="icon" style={{ width: 18, height: 18 }} viewBox="0 0 24 24">
@@ -101,11 +103,11 @@ export default function ExpenseCalendar({ batches }: Props) {
         </button>
       </div>
       <p style={{ textAlign: "center", fontSize: 13, color: "var(--sub)", margin: "4px 0 16px" }}>
-        이번 달 합계 {formatWon(monthTotal)}
+        {t("calendar.monthTotal")} {formatCurrency(monthTotal, language)}
       </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4, marginBottom: 4 }}>
-        {WEEKDAYS.map((w) => (
+        {WEEKDAY_KEYS.map((w) => (
           <div
             key={w}
             style={{
@@ -116,7 +118,7 @@ export default function ExpenseCalendar({ batches }: Props) {
               padding: "4px 0",
             }}
           >
-            {w}
+            {t(`calendar.weekday.${w}`)}
           </div>
         ))}
       </div>
@@ -177,7 +179,7 @@ export default function ExpenseCalendar({ batches }: Props) {
                     wordBreak: "keep-all",
                   }}
                 >
-                  {dayTotal.toLocaleString("ko-KR")}
+                  {dayTotal.toLocaleString(language === "vi" ? "vi-VN" : "ko-KR")}
                 </span>
               )}
             </button>
@@ -214,7 +216,7 @@ export default function ExpenseCalendar({ batches }: Props) {
                     {item.title}
                   </span>
                 </span>
-                <span style={{ fontWeight: 600, flexShrink: 0 }}>{formatWon(item.totalAmount)}</span>
+                <span style={{ fontWeight: 600, flexShrink: 0 }}>{formatCurrency(item.totalAmount, language)}</span>
               </div>
             ))}
           </div>

@@ -6,8 +6,9 @@ import SaveBatchPanel from "../components/SaveBatchPanel";
 import { exportPagesToPdf, exportPagesToJpg, renderPagesToPdfBlob } from "../utils/pdfExport";
 import type { PageOrientation } from "../utils/pdfExport";
 import { recognizeAmount } from "../utils/ocr";
-import { CATEGORIES, DEFAULT_CATEGORY } from "../constants/categories";
+import { CATEGORIES, DEFAULT_CATEGORY, getCategoryLabel } from "../constants/categories";
 import { usePageMeta } from "../hooks/usePageMeta";
+import { useLanguage } from "../context/LanguageContext";
 
 const controlStyle = {
   padding: "10px 12px",
@@ -25,6 +26,7 @@ export default function ReceiptManagerPage() {
   );
   const { receipts, addFiles, updateAmount, updateMemo, removeReceipt, clearAll, total } =
     useReceipts();
+  const { t, language } = useLanguage();
   const a4ContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -99,7 +101,7 @@ export default function ReceiptManagerPage() {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
           <input
             type="text"
-            placeholder="예: 2026년 6월 경비 영수증"
+            placeholder={t("receiptManager.titlePlaceholder")}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             style={{ ...controlStyle, flex: "2 1 220px", minWidth: 0 }}
@@ -111,7 +113,7 @@ export default function ReceiptManagerPage() {
           >
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>
-                {c}
+                {getCategoryLabel(c, language)}
               </option>
             ))}
           </select>
@@ -120,17 +122,17 @@ export default function ReceiptManagerPage() {
             onChange={(e) => setOrientation(e.target.value as PageOrientation)}
             style={{ ...controlStyle, flex: "1 1 120px", minWidth: 0 }}
           >
-            <option value="portrait">A4 (세로)</option>
-            <option value="landscape">A4 (가로)</option>
+            <option value="portrait">{t("receiptManager.orientationPortrait")}</option>
+            <option value="landscape">{t("receiptManager.orientationLandscape")}</option>
           </select>
           <select
             value={itemsPerPage}
             onChange={(e) => setItemsPerPage(Number(e.target.value))}
             style={{ ...controlStyle, flex: "1 1 130px", minWidth: 0 }}
           >
-            <option value={4}>4개 (2×2)</option>
-            <option value={6}>6개 (2×3)</option>
-            <option value={9}>9개 (3×3)</option>
+            <option value={4}>{t("receiptManager.itemsPerPage4")}</option>
+            <option value={6}>{t("receiptManager.itemsPerPage6")}</option>
+            <option value={9}>{t("receiptManager.itemsPerPage9")}</option>
           </select>
         </div>
 
@@ -146,11 +148,11 @@ export default function ReceiptManagerPage() {
           }}
         >
           <span style={{ fontSize: 13, color: "var(--sub)" }}>
-            영수증 {receipts.length}장 · {pageCount}페이지
+            {t("receiptManager.countSheets")} {receipts.length}{t("receiptManager.countSheetsUnit")} · {pageCount}{t("receiptManager.countPagesUnit")}
           </span>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             <button type="button" className="btn-secondary btn" onClick={triggerAdd}>
-              + 영수증 추가
+              {t("receiptManager.addButton")}
             </button>
             <button
               type="button"
@@ -158,7 +160,7 @@ export default function ReceiptManagerPage() {
               onClick={handleDownloadPdf}
               disabled={disabled || downloading !== null}
             >
-              {downloading === "pdf" ? "생성 중..." : "PDF로 저장"}
+              {downloading === "pdf" ? t("receiptManager.generating") : t("receiptManager.downloadPdf")}
             </button>
             <button
               type="button"
@@ -166,7 +168,7 @@ export default function ReceiptManagerPage() {
               onClick={handleDownloadJpg}
               disabled={disabled || downloading !== null}
             >
-              {downloading === "jpg" ? "생성 중..." : "JPG로 저장"}
+              {downloading === "jpg" ? t("receiptManager.generating") : t("receiptManager.downloadJpg")}
             </button>
             <SaveBatchPanel
               title={title}
@@ -205,7 +207,7 @@ export default function ReceiptManagerPage() {
       </main>
 
       <section style={{ maxWidth: 1200, margin: "0 auto", padding: "8px 24px 40px" }}>
-        <h2 style={{ fontSize: 20, marginBottom: 20 }}>모아모아로 영수증 정리가 쉬워져요</h2>
+        <h2 style={{ fontSize: 20, marginBottom: 20 }}>{t("receiptManager.heading")}</h2>
         <div
           style={{
             display: "grid",
@@ -215,20 +217,20 @@ export default function ReceiptManagerPage() {
         >
           {[
             {
-              title: "자동 A4 정렬",
-              desc: "영수증 사진을 올리면 A4 용지 형태로 자동 정렬돼서 바로 PDF로 만들 수 있어요.",
+              title: t("receiptManager.feature1Title"),
+              desc: t("receiptManager.feature1Desc"),
             },
             {
-              title: "금액 자동 인식",
-              desc: "영수증 사진 속 숫자를 읽어와 금액을 자동으로 채워주는 OCR 기능을 제공해요.",
+              title: t("receiptManager.feature2Title"),
+              desc: t("receiptManager.feature2Desc"),
             },
             {
-              title: "안전한 저장",
-              desc: "로그인 후 정리 내역을 저장하면 언제든 다시 찾아보고, PC·모바일 어디서든 확인할 수 있어요.",
+              title: t("receiptManager.feature3Title"),
+              desc: t("receiptManager.feature3Desc"),
             },
             {
-              title: "지출 통계·엑셀",
-              desc: "카테고리별 지출과 월별 추이를 통계로 보고, 정리 내역을 엑셀로도 내려받을 수 있어요.",
+              title: t("receiptManager.feature4Title"),
+              desc: t("receiptManager.feature4Desc"),
             },
           ].map((f) => (
             <div
@@ -248,15 +250,15 @@ export default function ReceiptManagerPage() {
           ))}
         </div>
         <p style={{ fontSize: 13.5, color: "var(--sub)", marginTop: 20 }}>
-          더 자세한 사용법은{" "}
+          {t("receiptManager.guidePrefix")}{" "}
           <Link to="/guide" style={{ color: "var(--primary)", fontWeight: 600 }}>
-            이용 가이드
+            {t("receiptManager.guideLink")}
           </Link>
-          와{" "}
+          {t("receiptManager.guideMid")}{" "}
           <Link to="/faq" style={{ color: "var(--primary)", fontWeight: 600 }}>
-            자주 묻는 질문
+            {t("receiptManager.faqLink")}
           </Link>
-          에서 확인해보세요.
+          {t("receiptManager.guideSuffix")}
         </p>
       </section>
     </>

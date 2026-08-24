@@ -1,4 +1,5 @@
 import { usePageMeta } from "../hooks/usePageMeta";
+import { useLanguage } from "../context/LanguageContext";
 
 const sectionStyle = { marginBottom: 24 };
 const headingStyle = { fontSize: 16, marginBottom: 8 };
@@ -14,10 +15,9 @@ const thStyle = {
 };
 const tdStyle = { padding: "8px 10px", border: "1px solid var(--border)" };
 
-export default function PrivacyPage() {
-  usePageMeta("개인정보처리방침 · 모아모아");
+function KoContent() {
   return (
-    <main style={{ maxWidth: 720, margin: "0 auto", padding: 24 }}>
+    <>
       <h1 style={{ fontSize: 22, marginBottom: 4 }}>개인정보처리방침</h1>
       <p style={{ fontSize: 13, color: "var(--sub)", marginBottom: 28 }}>시행일: 2026년 8월 22일</p>
 
@@ -190,6 +190,197 @@ export default function PrivacyPage() {
           공지사항을 통해 안내합니다.
         </p>
       </section>
+    </>
+  );
+}
+
+function ViContent() {
+  return (
+    <>
+      <h1 style={{ fontSize: 22, marginBottom: 4 }}>Chính sách bảo mật</h1>
+      <p style={{ fontSize: 13, color: "var(--sub)", marginBottom: 28 }}>Ngày hiệu lực: 22/08/2026</p>
+
+      <section style={sectionStyle}>
+        <p style={textStyle}>
+          Lập trình viên cá nhân (sau đây gọi là "Nhà điều hành") vận hành MoaMoa (sau đây gọi là
+          "Dịch vụ") coi trọng thông tin cá nhân của người dùng và nỗ lực tuân thủ các quy định
+          pháp luật liên quan. Chính sách này giải thích Dịch vụ thu thập những thông tin cá nhân
+          nào và sử dụng, lưu trữ chúng ra sao.
+        </p>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>1. Thông tin cá nhân được thu thập</h2>
+        <table style={tableStyle}>
+          <thead>
+            <tr>
+              <th style={thStyle}>Phân loại</th>
+              <th style={thStyle}>Thông tin thu thập</th>
+              <th style={thStyle}>Cách thu thập</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={tdStyle}>Đăng ký (Email)</td>
+              <td style={tdStyle}>Địa chỉ email, mật khẩu (lưu dưới dạng mã hóa)</td>
+              <td style={tdStyle}>Người dùng nhập trực tiếp</td>
+            </tr>
+            <tr>
+              <td style={tdStyle}>Đăng ký (Google)</td>
+              <td style={tdStyle}>Địa chỉ email tài khoản Google</td>
+              <td style={tdStyle}>Cung cấp khi xác thực Google OAuth</td>
+            </tr>
+            <tr>
+              <td style={tdStyle}>Sử dụng dịch vụ</td>
+              <td style={tdStyle}>
+                Ảnh hóa đơn đã tải lên, tiêu đề/danh mục/số tiền/ghi chú, file PDF đã tạo
+              </td>
+              <td style={tdStyle}>Người dùng tải lên/nhập trực tiếp</td>
+            </tr>
+            <tr>
+              <td style={tdStyle}>Thu thập tự động</td>
+              <td style={tdStyle}>Nhật ký truy cập, nhật ký sử dụng dịch vụ</td>
+              <td style={tdStyle}>Tự động tạo trong quá trình sử dụng dịch vụ</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>2. Mục đích thu thập và sử dụng thông tin cá nhân</h2>
+        <ul style={{ ...textStyle, paddingLeft: 20 }}>
+          <li>Xác định thành viên và xác thực đăng nhập</li>
+          <li>Cung cấp dịch vụ sắp xếp hóa đơn, tạo/lưu PDF, thống kê chi tiêu</li>
+          <li>Phản hồi các thắc mắc về dịch vụ</li>
+          <li>Ngăn chặn việc sử dụng dịch vụ trái phép</li>
+        </ul>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>3. Thời gian lưu giữ và sử dụng thông tin cá nhân</h2>
+        <p style={textStyle}>
+          Thông tin cá nhân của người dùng được lưu giữ cho đến khi xóa tài khoản, và sẽ bị hủy
+          ngay khi có yêu cầu xóa tài khoản. Bạn có thể tự xóa ngay tài khoản và lịch sử đã lưu tại
+          mục "Xóa tài khoản" ở cuối Trang cá nhân; các yêu cầu khác vui lòng gửi qua email bên
+          dưới để được xử lý. Trường hợp pháp luật yêu cầu lưu trữ, thông tin sẽ được lưu riêng
+          trong thời hạn đó rồi hủy.
+        </p>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>4. Cung cấp thông tin cá nhân cho bên thứ ba</h2>
+        <p style={textStyle}>
+          Nhà điều hành không cung cấp thông tin cá nhân của người dùng cho bên thứ ba ngoài phạm
+          vi đã thông báo trong chính sách này, trừ trường hợp có căn cứ pháp luật hoặc cơ quan
+          điều tra yêu cầu theo đúng thủ tục pháp lý.
+        </p>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>5. Ủy thác xử lý thông tin cá nhân (bao gồm nước ngoài)</h2>
+        <p style={textStyle}>
+          Dịch vụ sử dụng các dịch vụ bên ngoài sau đây để xử lý thông tin cá nhân.
+        </p>
+        <table style={tableStyle}>
+          <thead>
+            <tr>
+              <th style={thStyle}>Đơn vị được ủy thác</th>
+              <th style={thStyle}>Công việc ủy thác</th>
+              <th style={thStyle}>Ghi chú</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={tdStyle}>Supabase (Supabase Inc.)</td>
+              <td style={tdStyle}>Xác thực thành viên, cơ sở dữ liệu, lưu trữ file (PDF)</td>
+              <td style={tdStyle}>Vận hành máy chủ ở nước ngoài</td>
+            </tr>
+            <tr>
+              <td style={tdStyle}>Vercel (Vercel Inc.)</td>
+              <td style={tdStyle}>Lưu trữ website</td>
+              <td style={tdStyle}>Vận hành máy chủ ở nước ngoài</td>
+            </tr>
+            <tr>
+              <td style={tdStyle}>Google LLC</td>
+              <td style={tdStyle}>Xác thực đăng nhập bằng Google</td>
+              <td style={tdStyle}>Chỉ áp dụng khi người dùng lựa chọn</td>
+            </tr>
+            <tr>
+              <td style={tdStyle}>Google LLC (AdSense)</td>
+              <td style={tdStyle}>Hiển thị quảng cáo và quảng cáo tùy chỉnh</td>
+              <td style={tdStyle}>Áp dụng khi triển khai quảng cáo</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>6. Cookie và quảng cáo</h2>
+        <p style={textStyle}>
+          Dịch vụ có thể hiển thị quảng cáo thông qua dịch vụ quảng cáo bên thứ ba như Google
+          AdSense. Google và các đơn vị quảng cáo khác có thể sử dụng cookie để hiển thị quảng cáo
+          tùy chỉnh dựa trên lịch sử truy cập trang này và các trang khác của người dùng.
+        </p>
+        <ul style={{ ...textStyle, paddingLeft: 20, marginTop: 8 }}>
+          <li>
+            Người dùng có thể tắt quảng cáo tùy chỉnh tại{" "}
+            <a href="https://adssettings.google.com" target="_blank" rel="noreferrer">
+              Cài đặt quảng cáo của Google
+            </a>
+            .
+          </li>
+          <li>
+            Bạn có thể từ chối hoặc xóa cookie trong cài đặt trình duyệt, tuy nhiên điều này có thể
+            hạn chế một số tính năng của dịch vụ.
+          </li>
+        </ul>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>7. Quyền của chủ thể thông tin và cách thực hiện</h2>
+        <p style={textStyle}>
+          Người dùng có thể xem hoặc chỉnh sửa thông tin cá nhân của mình bất cứ lúc nào, và có thể
+          yêu cầu xóa tài khoản (xóa thông tin cá nhân). Bạn có thể tự sửa tên trong Trang cá nhân;
+          các quyền khác có thể yêu cầu qua email liên hệ bên dưới.
+        </p>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>8. Biện pháp bảo đảm an toàn thông tin cá nhân</h2>
+        <ul style={{ ...textStyle, paddingLeft: 20 }}>
+          <li>Mật khẩu được mã hóa và lưu trữ thông qua nhà cung cấp xác thực (Supabase Auth); ngay cả Nhà điều hành cũng không thể biết nội dung gốc.</li>
+          <li>Áp dụng mã hóa HTTPS cho toàn bộ đường truyền.</li>
+          <li>Cơ sở dữ liệu áp dụng kiểm soát truy cập theo hàng (Row Level Security), giới hạn chỉ chủ tài khoản mới xem/sửa được dữ liệu của mình.</li>
+        </ul>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>9. Người phụ trách bảo vệ thông tin cá nhân</h2>
+        <p style={textStyle}>
+          MoaMoa là dịch vụ do một lập trình viên cá nhân không có đăng ký kinh doanh vận hành, và
+          tiếp nhận các thắc mắc về thông tin cá nhân qua liên hệ bên dưới.
+          <br />
+          Email: jinujeon05@gmail.com
+        </p>
+      </section>
+
+      <section style={sectionStyle}>
+        <h2 style={headingStyle}>10. Nghĩa vụ thông báo</h2>
+        <p style={textStyle}>
+          Chính sách này có thể được sửa đổi theo pháp luật, chính sách hoặc thay đổi của dịch vụ,
+          và sẽ được thông báo qua mục thông báo trong dịch vụ khi có thay đổi.
+        </p>
+      </section>
+    </>
+  );
+}
+
+export default function PrivacyPage() {
+  const { language } = useLanguage();
+  usePageMeta(language === "vi" ? "Chính sách bảo mật · MoaMoa" : "개인정보처리방침 · 모아모아");
+  return (
+    <main style={{ maxWidth: 720, margin: "0 auto", padding: 24 }}>
+      {language === "vi" ? <ViContent /> : <KoContent />}
     </main>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 import { useSaveBatch } from "../hooks/useSaveBatch";
 
 interface Props {
@@ -23,6 +24,7 @@ export default function SaveBatchPanel({
   getPdfBlob,
 }: Props) {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const { saveBatch, saving } = useSaveBatch();
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
@@ -30,14 +32,14 @@ export default function SaveBatchPanel({
   if (!user) {
     return (
       <Link to="/login" className="btn-secondary btn" style={{ textDecoration: "none" }}>
-        로그인하고 저장하기
+        {t("saveBatch.loginPrompt")}
       </Link>
     );
   }
 
   const handleSave = async () => {
     if (!title.trim()) {
-      setError("제목을 입력해주세요");
+      setError(t("saveBatch.errorTitleRequired"));
       return;
     }
     setError("");
@@ -67,10 +69,10 @@ export default function SaveBatchPanel({
         onClick={handleSave}
         disabled={disabled || saving}
       >
-        {saving ? "저장 중..." : "마이페이지에 저장"}
+        {saving ? t("saveBatch.saving") : t("saveBatch.save")}
       </button>
       {error && <p style={{ margin: 0, fontSize: 12, color: "#F04452" }}>{error}</p>}
-      {saved && <p style={{ margin: 0, fontSize: 12, color: "var(--primary)" }}>저장했어요!</p>}
+      {saved && <p style={{ margin: 0, fontSize: 12, color: "var(--primary)" }}>{t("saveBatch.saved")}</p>}
     </div>
   );
 }

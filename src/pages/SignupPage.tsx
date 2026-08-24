@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 import { usePageMeta } from "../hooks/usePageMeta";
 
 const inputStyle = {
@@ -24,16 +25,17 @@ export default function SignupPage() {
   const [submitting, setSubmitting] = useState(false);
   const [confirmationSent, setConfirmationSent] = useState(false);
   const { signUp, signInWithProvider } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!agreed) {
-      setError("이용약관과 개인정보처리방침에 동의해주세요");
+      setError(t("signup.errors.agree"));
       return;
     }
     if (password !== passwordConfirm) {
-      setError("비밀번호가 일치하지 않아요");
+      setError(t("signup.errors.mismatch"));
       return;
     }
     setSubmitting(true);
@@ -53,7 +55,7 @@ export default function SignupPage() {
 
   const handleProvider = async (provider: "google" | "kakao") => {
     if (!agreed) {
-      setError("이용약관과 개인정보처리방침에 동의해주세요");
+      setError(t("signup.errors.agree"));
       return;
     }
     setError("");
@@ -64,15 +66,16 @@ export default function SignupPage() {
   if (confirmationSent) {
     return (
       <main style={{ maxWidth: 380, margin: "60px auto", padding: "0 24px", textAlign: "center" }}>
-        <h1 style={{ fontSize: 24, marginBottom: 8 }}>이메일을 확인해주세요</h1>
+        <h1 style={{ fontSize: 24, marginBottom: 8 }}>{t("signup.confirmTitle")}</h1>
         <p style={{ color: "var(--sub)", fontSize: 14, marginBottom: 8 }}>
-          <strong style={{ color: "var(--text)" }}>{email}</strong>로 인증 메일을 보냈어요.
+          <strong style={{ color: "var(--text)" }}>{email}</strong>
+          {t("signup.confirmSentSuffix")}
         </p>
         <p style={{ color: "var(--sub)", fontSize: 14, marginBottom: 28 }}>
-          메일함의 링크를 클릭하면 가입이 완료돼요.
+          {t("signup.confirmInstruction")}
         </p>
         <Link to="/login" style={{ color: "var(--primary)", fontWeight: 600, fontSize: 14 }}>
-          로그인으로 돌아가기
+          {t("signup.backToLogin")}
         </Link>
       </main>
     );
@@ -80,15 +83,15 @@ export default function SignupPage() {
 
   return (
     <main style={{ maxWidth: 380, margin: "60px auto", padding: "0 24px" }}>
-      <h1 style={{ fontSize: 24, textAlign: "center", marginBottom: 8 }}>회원가입</h1>
+      <h1 style={{ fontSize: 24, textAlign: "center", marginBottom: 8 }}>{t("signup.title")}</h1>
       <p style={{ textAlign: "center", color: "var(--sub)", fontSize: 14, marginBottom: 32 }}>
-        몇 초면 가입이 끝나요
+        {t("signup.subtitle")}
       </p>
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         <input
           type="email"
-          placeholder="이메일"
+          placeholder={t("signup.emailPlaceholder")}
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -96,7 +99,7 @@ export default function SignupPage() {
         />
         <input
           type="password"
-          placeholder="비밀번호 (6자 이상)"
+          placeholder={t("signup.passwordPlaceholder")}
           required
           minLength={6}
           value={password}
@@ -105,7 +108,7 @@ export default function SignupPage() {
         />
         <input
           type="password"
-          placeholder="비밀번호 확인"
+          placeholder={t("signup.passwordConfirmPlaceholder")}
           required
           value={passwordConfirm}
           onChange={(e) => setPasswordConfirm(e.target.value)}
@@ -129,38 +132,38 @@ export default function SignupPage() {
           />
           <span>
             <Link to="/terms" target="_blank" style={{ color: "var(--primary)", fontWeight: 600 }}>
-              이용약관
+              {t("signup.agreeTerms")}
             </Link>
-            {" 및 "}
+            {t("signup.agreeAnd")}
             <Link to="/privacy" target="_blank" style={{ color: "var(--primary)", fontWeight: 600 }}>
-              개인정보처리방침
+              {t("signup.agreePrivacy")}
             </Link>
-            에 동의합니다 (필수)
+            {t("signup.agreeSuffix")}
           </span>
         </label>
         {error && <p style={{ color: "#F04452", fontSize: 13, margin: 0 }}>{error}</p>}
         <button type="submit" className="btn" style={{ marginTop: 8 }} disabled={submitting}>
-          {submitting ? "가입 처리 중..." : "회원가입"}
+          {submitting ? t("signup.submitting") : t("signup.submit")}
         </button>
       </form>
 
       <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "24px 0" }}>
         <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
-        <span style={{ fontSize: 12, color: "var(--sub)" }}>또는</span>
+        <span style={{ fontSize: 12, color: "var(--sub)" }}>{t("common.or")}</span>
         <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         <button type="button" className="btn-secondary btn" onClick={() => handleProvider("google")}>
-          Google로 계속하기
+          {t("common.continueGoogle")}
         </button>
         {/* 카카오 로그인: 사업자 등록 후 동의항목(이메일) 설정 완료되면 다시 노출 */}
       </div>
 
       <p style={{ textAlign: "center", fontSize: 14, color: "var(--sub)", marginTop: 28 }}>
-        이미 계정이 있으신가요?{" "}
+        {t("signup.haveAccount")}{" "}
         <Link to="/login" style={{ color: "var(--primary)", fontWeight: 600 }}>
-          로그인
+          {t("signup.loginLink")}
         </Link>
       </p>
     </main>
