@@ -1,0 +1,39 @@
+{
+  "_안내": "고객사 차량지원이 있는 경우의 예시입니다.",
+  "client": {
+    "name": "한빛전자 비나",
+    "contact": "Nguyễn Văn A 부장님",
+    "location": "박닌성 옌퐁 산업단지",
+    "industry": "전자부품"
+  },
+  "proposalDate": "2026-10-05",
+  "validUntil": "2026-11-04",
+  "needs": [
+    { "issue": "신규 라인 증설로 생산 인력 50명 필요", "solution": "2주 내 단계별 투입 (1주차 30명, 2주차 20명)" },
+    { "issue": "검사(QC) 인력 숙련도 편차", "solution": "투입 전 검사 기준 교육 + 숙련자 우선 배치" },
+    { "issue": "월 이직률 높아 매번 재교육 발생", "solution": "고정 인력 풀 운영, 장기 근속자 인센티브" },
+    { "issue": "일일 인원 현황 파악이 늦음", "solution": "매일 09시 계획/실적표 공유" }
+  ],
+  "workDaysPerMonth": 26,
+  "plan": [
+    { "role": "생산 라인", "shift": "주간", "headcount": 35, "period": "2026.11 ~ 2027.04" },
+    { "role": "검사(QC)", "shift": "야간", "headcount": 15, "period": "2026.11 ~ 2027.04" }
+  ],
+  "vehicle": {
+    "clientSupport": true,
+    "clientSupportType": "고객사 셔틀버스",
+    "pickupPoints": ["박닌 버스터미널", "뜨선 시장", "옌퐁 산업단지 정문"]
+  },
+  "pricing": [
+    { "role": "생산 라인", "unitPrice": 420000, "includes": "임금·보험·관리비" },
+    { "role": "검사(QC)", "unitPrice": 460000, "includes": "야간수당·보험·관리비" }
+  ],
+  "pricingNote": "VND / 1인·1일(8시간) 기준, VAT 별도. 출퇴근은 고객사 셔틀 이용.",
+  "terms": [
+    "계약 기간: 2026.11.01 ~ 2027.04.30",
+    "정산: 월말 마감, 익월 10일 계산서 발행",
+    "인원 변경: 3일 전 통보",
+    "견적 유효기간: 2026.11.04"
+  ],
+  "nextSteps": ["라인 투어 및 직무 확인", "투입 일정 확정", "계약 체결"]
+}

@@ -1,0 +1,49 @@
+{
+  "_안내": "고객사별로 이 파일을 복사해서 값만 바꾸세요. 예: data/clients/한빛전자.json",
+  "client": {
+    "name": "대성섬유 VN",
+    "contact": "Trần Thị B 과장님",
+    "location": "동나이성 비엔호아",
+    "industry": "봉제"
+  },
+  "proposalDate": "2026-10-01",
+  "validUntil": "2026-10-31",
+  "needs": [
+    { "issue": "성수기(11~1월) 봉제 라인 인력 30명 부족", "solution": "숙련자 포함 30명 투입, D-7 사전 명단 제출" },
+    { "issue": "야간 교대 결원으로 생산 차질", "solution": "예비 인력 10% 확보, 결원 시 2시간 내 대체" },
+    { "issue": "출퇴근 교통 문제로 인한 조기 이탈", "solution": "자사 버스 운행으로 정시 출근·이탈 방지" }
+  ],
+  "workDaysPerMonth": 26,
+  "plan": [
+    { "role": "봉제(숙련)", "shift": "주간", "headcount": 5, "period": "2026.11 ~ 2027.01" },
+    { "role": "봉제(일반)", "shift": "주간", "headcount": 20, "period": "2026.11 ~ 2027.01" },
+    { "role": "포장·검사", "shift": "야간", "headcount": 10, "period": "2026.11 ~ 2027.01" }
+  ],
+  "vehicle": {
+    "clientSupport": false,
+    "_clientSupport안내": "true = 고객사가 셔틀/교통비 지원, false = 미지원(자사 차량 또는 교통비 방식 제안)",
+    "clientSupportType": "",
+    "ourVehicle": "29인승 버스 1대 + 16인승 1대",
+    "route": "비엔호아 시장 → 공장 (주간 1회 / 야간 1회 왕복)",
+    "pickupPoints": ["비엔호아 시장", "떤히엡 사거리", "공장 정문"],
+    "costPerDay": 1800000,
+    "costBilling": "청구단가에 포함 (별도 청구 없음)"
+  },
+  "pricing": [
+    { "role": "봉제(숙련)", "unitPrice": 450000, "includes": "임금·보험·관리비·차량" },
+    { "role": "봉제(일반)", "unitPrice": 390000, "includes": "임금·보험·관리비·차량" },
+    { "role": "포장·검사(야간)", "unitPrice": 420000, "includes": "야간수당·보험·관리비·차량" }
+  ],
+  "pricingNote": "VND / 1인·1일(8시간) 기준, VAT 별도. 연장근로는 노동법 기준 할증 적용.",
+  "terms": [
+    "계약 기간: 2026.11.01 ~ 2027.01.31 (연장 가능)",
+    "정산: 월말 마감, 익월 10일 계산서 발행",
+    "인원 변경: 3일 전 통보 시 추가 비용 없음",
+    "견적 유효기간: 2026.10.31"
+  ],
+  "nextSteps": [
+    "현장 방문 및 공정 확인",
+    "최종 인원·단가 확정",
+    "계약 체결 및 명단 제출"
+  ]
+}
