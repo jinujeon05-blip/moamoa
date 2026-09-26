@@ -1,0 +1,12 @@
+{
+  "name": "labor-proposal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "고객사 인력공급 제안서(PPTX) 생성기",
+  "scripts": {
+    "all": "node generate.js --all"
+  },
+  "dependencies": {
+    "pptxgenjs": "^4.0.1"
+  }
+}
